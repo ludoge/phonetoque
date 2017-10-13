@@ -4,9 +4,12 @@ from lxml import html
 import requests
 import re
 from bs4 import BeautifulSoup
+import os
+import csv
 
 
 def pronunciations_from_wiktionary(word):
+    print("Fetching pronunciations for: %s\n" %word)
     soup = BeautifulSoup(requests.get('https://en.wiktionary.org/wiki/%s' % word).content, 'lxml')
 
     try:
@@ -26,7 +29,43 @@ def pronunciations_from_wiktionary(word):
     return pronunciations
 
 
+def pronunciations_from_wiktionary_list(words):
+    pronunciations_dictionary = {word: pronunciations_from_wiktionary(word) for word in words}
+    return pronunciations_dictionary
+
+
+def read_csv(filename):
+    file = open(filename, 'r')
+    return file.read().split(",")
+
+
+def read_wordlist(filename):
+    file = open(filename, 'r')
+    return file.read().split("\n")
+
+
+def write_to_csv(dictionary, filename):
+    try:
+        os.rename(filename, filename+".previous")
+    except:
+        pass
+    file = open(filename, 'w+', encoding="utf-8")
+    for word in dictionary:
+        if len(dictionary[word])>0:
+            file.write(word)
+            file.write(':')
+            for pronunciation in dictionary[word]:
+                file.write(" "+pronunciation+",")
+            file.write("\n")
+    file.close()
+
+
+
+
 if __name__ == '__main__':
-    while True:
-        word = input("Enter an English word: \n")
-        print(pronunciations_from_wiktionary(word))
+    # while True:
+    #    word = input("Enter an English word: \n")
+    #    print(pronunciations_from_wiktionary(word))
+    # print(pronunciations_from_wiktionary_list(["cat","dog"]))
+    # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
+    write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
