@@ -25,8 +25,24 @@ def pronunciations_from_wiktionary(word):
     regex = re.compile('^[/\[].*[/\]]$')
 
     # Removing tags and eventual parasites (see: penis)
-    pronunciations = [x.text for x in pronunciations if regex.search(x.text)]
+    pronunciations = [x.text for x in pronunciations if regex.search(x)]
     return pronunciations
+
+def pronunciations_from_wiktionary_french(word):
+    print("Fetching pronunciations for: %s\n" %word)
+    soup = BeautifulSoup(requests.get('https://fr.wiktionary.org/wiki/%s' % word).content, 'lxml')
+
+    # This is French, we don't worry about multiple pronunciations. Vive l'Académie !
+    pronunciation = soup.find('span', class_="API").text
+
+    # Difference between the two IPA syntaxes left for later
+    # regex = re.compile('^[/\[\\].*[/\\\]]$')
+
+    # Removing tags and eventual parasites (see: penis)
+
+    pronunciation = "/"+pronunciation.replace("\\","")+"/"
+
+    return [pronunciation]
 
 
 def pronunciations_from_wiktionary_list(words):
@@ -63,9 +79,9 @@ def write_to_csv(dictionary, filename):
 
 
 if __name__ == '__main__':
-    # while True:
-    #    word = input("Enter an English word: \n")
-    #    print(pronunciations_from_wiktionary(word))
+    while True:
+       word = input("Enter a French word: \n")
+       print(pronunciations_from_wiktionary_french(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
-    write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
+    # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
