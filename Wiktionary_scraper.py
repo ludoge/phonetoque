@@ -9,6 +9,7 @@ import csv
 
 
 def pronunciations_from_wiktionary(word):
+    word = word.lower()
     print("Fetching pronunciations for: %s\n" %word)
     soup = BeautifulSoup(requests.get('https://en.wiktionary.org/wiki/%s' % word).content, 'lxml')
 
@@ -25,7 +26,7 @@ def pronunciations_from_wiktionary(word):
     regex = re.compile('^[/\[].*[/\]]$')
 
     # Removing tags and eventual parasites (see: penis)
-    pronunciations = [x.text for x in pronunciations if regex.search(x)]
+    pronunciations = [x.text for x in pronunciations if regex.search(x.text)]
     return pronunciations
 
 def pronunciations_from_wiktionary_french(word):
@@ -80,8 +81,8 @@ def write_to_csv(dictionary, filename):
 
 if __name__ == '__main__':
     while True:
-       word = input("Enter a French word: \n")
-       print(pronunciations_from_wiktionary_french(word))
+       word = input("Enter an English word: \n")
+       print(pronunciations_from_wiktionary(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
     # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
