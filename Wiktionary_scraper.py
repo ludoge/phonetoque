@@ -45,6 +45,22 @@ def pronunciations_from_wiktionary_french(word):
 
     return [pronunciation]
 
+def pronunciations_from_wiktionary_italian(word):
+    print("Fetching pronunciations for: %s\n" %word)
+    soup = BeautifulSoup(requests.get('https://it.wiktionary.org/wiki/%s' % word).content, 'lxml')
+
+    try:
+        # In Italian there is only one pronunciation
+        pronunciation = soup.find('span', class_="IPA").text
+        
+         # regex = re.compile('^[/\[\\].*[/\\\]]$')
+        pronunciation = "/"+pronunciation.replace("\\","")+"/"
+        return [pronunciation]
+
+    except AttributeError:
+        print("Can't find pronunciation for", word)
+
+
 
 def pronunciations_from_wiktionary_list(words):
     pronunciations_dictionary = {word: pronunciations_from_wiktionary(word) for word in words}
@@ -81,8 +97,8 @@ def write_to_csv(dictionary, filename):
 
 if __name__ == '__main__':
     while True:
-       word = input("Enter an English word: \n")
-       print(pronunciations_from_wiktionary(word))
+       word = input("Enter an Italian word: \n")
+       print(pronunciations_from_wiktionary_italian(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
     # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
