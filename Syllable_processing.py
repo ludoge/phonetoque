@@ -87,7 +87,7 @@ def writeSyllableFrequencies(countedSyllableDict, filename):
 
 def splitScore(splitWord, countedSyllableDict):#takes a list of strings representing syllables and a frequency dictionary
     result = 1
-    minfreq = 0.0000000007 #frequency used for unknown syllables
+    minfreq = 0.000000000007 #frequency used for unknown syllables
     for syllable in splitWord:
         try:
             result *= (countedSyllableDict[syllable])
@@ -109,18 +109,6 @@ print(distinctSyllables)
 print(countedSyllables["ə"])
 
 print(len(distinctSyllables))
-
-print(splitScore(["əbaʊt"], countedSyllables))
-print(splitScore(["ə", "baʊt"], countedSyllables))
-print(splitScore(["əb", "aʊt"], countedSyllables))
-print(splitScore(["əba", "ʊt"], countedSyllables))
-print(splitScore(["əbaʊ", "t"], countedSyllables))
-print(splitScore(["ə","b","aʊt"], countedSyllables))
-print(splitScore(["ə","ba","ʊt"], countedSyllables))
-print(splitScore(["ə","baʊ","t"], countedSyllables))
-print(splitScore(["əb","a","ʊt"], countedSyllables))
-print(splitScore(["əb","aʊ","t"], countedSyllables))
-print(splitScore(["əba","ʊ","t"], countedSyllables))
 """
 #print (possibleSplits("test",20))
 
@@ -130,7 +118,7 @@ print(splitScore(["əba","ʊ","t"], countedSyllables))
 
 allsplits = generatePatternsUpTo(10)
 
-word = "ɛvɹibədi"
+word = "tɛləvɪʒən"
 
 bestSplit=[]
 bestScore=-100000
@@ -139,13 +127,13 @@ splits = possibleSplits(word)
 
 for split in splits:
     score = splitScore(split,countedSyllables)
-    #print(split)
-    #print(score)
+    print(split)
+    print(score)
     if score>bestScore:
         bestScore=score
         bestSplit=split
-
+print("\n")
 print(bestSplit)
 print(bestScore)
 
-#writeSyllableFrequencies(countedSyllables,"sylllable_freqs.txt")
+writeSyllableFrequencies(countedSyllables,"sylllable_freqs.txt")
