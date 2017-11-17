@@ -26,7 +26,7 @@ def pronunciations_from_wiktionary(word):
     regex = re.compile('^[/\[].*[/\]]$')
 
     # Removing tags and eventual parasites (see: penis)
-    pronunciations = [x.text for x in pronunciations if regex.search(x.text)]
+    pronunciations = [x.text.replace("/","").replace("[","").replace("]","") for x in pronunciations if regex.search(x.text)]
     return pronunciations
 
 def pronunciations_from_wiktionary_french(word):
@@ -41,7 +41,12 @@ def pronunciations_from_wiktionary_french(word):
 
     # Removing tags and eventual parasites (see: penis)
 
-    pronunciation = "/"+pronunciation.replace("\\","")+"/"
+    # pronunciation = regex.sub(pronunciation)
+    pronunciation = pronunciation.replace("[","")
+    pronunciation = pronunciation.replace("]","")
+    pronunciation = pronunciation.replace("/","")
+
+    pronunciation = pronunciation.replace("\\","")
 
     return [pronunciation]
 
@@ -69,20 +74,20 @@ def write_to_csv(dictionary, filename):
     file = open(filename, 'w+', encoding="utf-8")
     for word in dictionary:
         if len(dictionary[word])>0:
-            file.write(word)
-            file.write(':')
+            #file.write(word)
+            #file.write(':')
             for pronunciation in dictionary[word]:
-                file.write(" "+pronunciation+",")
-            file.write("\n")
+                file.write(pronunciation+"\n")
+            #file.write("\n")
     file.close()
 
 
 
 
 if __name__ == '__main__':
-    while True:
-       word = input("Enter an English word: \n")
-       print(pronunciations_from_wiktionary(word))
+    # while True:
+    #   word = input("Enter an English word: \n")
+    #   print(pronunciations_from_wiktionary(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
-    # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000CommonPronunciations.csv")
+    write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000Pron.txt")
