@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f44f20cc-489a-484d-8b70-f6028b882e0e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/phoneticModel.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Wiktionary_scraper.py" afterPath="$PROJECT_DIR$/Wiktionary_scraper.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phoneticModel.py" afterPath="$PROJECT_DIR$/phoneticModel.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -13,17 +14,17 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/phonetoque$phoneticModel.coverage" NAME="phoneticModel Coverage Results" MODIFIED="1511341801774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/phonetoque$phoneticModel.coverage" NAME="phoneticModel Coverage Results" MODIFIED="1511357111738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/phonetoque$Wiktionary_scraper.coverage" NAME="Wiktionary_scraper Coverage Results" MODIFIED="1510908534605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/phonetoque$Syllable_processing.coverage" NAME="Syllable_processing Coverage Results" MODIFIED="1511340847486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/phonetoque$Syllable_processing.coverage" NAME="Syllable_processing Coverage Results" MODIFIED="1511357356734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
       <file leaf-file-name="Wiktionary_scraper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Wiktionary_scraper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
-              <caret line="92" column="96" lean-forward="false" selection-start-line="92" selection-start-column="96" selection-end-line="92" selection-end-column="96" />
+            <state relative-caret-position="147">
+              <caret line="12" column="6" lean-forward="false" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -32,8 +33,8 @@
       <file leaf-file-name="Syllable_processing.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Syllable_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-811">
-              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="66" selection-end-column="75" />
+            <state relative-caret-position="168">
+              <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="67" selection-end-column="73" />
               <folding>
                 <element signature="e#16#25#0" expanded="true" />
               </folding>
@@ -44,9 +45,13 @@
       <file leaf-file-name="phoneticModel.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/phoneticModel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="42" column="62" lean-forward="false" selection-start-line="42" selection-start-column="62" selection-end-line="42" selection-end-column="62" />
-              <folding />
+            <state relative-caret-position="457">
+              <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#25#0" expanded="true" />
+                <element signature="e#1576#1866#0" expanded="false" />
+                <element signature="e#1914#1988#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -68,8 +73,8 @@
       <list>
         <option value="$PROJECT_DIR$/WordReference_Scraper.py" />
         <option value="$PROJECT_DIR$/rhouse_scraper.py" />
-        <option value="$PROJECT_DIR$/Wiktionary_scraper.py" />
         <option value="$PROJECT_DIR$/Syllable_processing.py" />
+        <option value="$PROJECT_DIR$/Wiktionary_scraper.py" />
         <option value="$PROJECT_DIR$/phoneticModel.py" />
       </list>
     </option>
@@ -118,7 +123,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.phoneticModel">
+  <component name="RunManager" selected="Python.Syllable_processing">
     <configuration name="Syllable_processing" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -180,8 +185,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.phoneticModel" />
-        <item index="1" class="java.lang.String" itemvalue="Python.Syllable_processing" />
+        <item index="0" class="java.lang.String" itemvalue="Python.Syllable_processing" />
+        <item index="1" class="java.lang.String" itemvalue="Python.phoneticModel" />
         <item index="2" class="java.lang.String" itemvalue="Python.Wiktionary_scraper" />
       </list>
     </recent_temporary>
@@ -310,29 +315,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Wiktionary_scraper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="12" column="6" lean-forward="false" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Syllable_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-811">
-          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="66" selection-end-column="75" />
+        <state relative-caret-position="168">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="65" selection-start-column="0" selection-end-line="67" selection-end-column="73" />
           <folding>
             <element signature="e#16#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Wiktionary_scraper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="92" column="96" lean-forward="false" selection-start-line="92" selection-start-column="96" selection-end-line="92" selection-end-column="96" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/phoneticModel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="42" column="62" lean-forward="false" selection-start-line="42" selection-start-column="62" selection-end-line="42" selection-end-column="62" />
-          <folding />
+        <state relative-caret-position="457">
+          <caret line="75" column="0" lean-forward="true" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#1576#1866#0" expanded="false" />
+            <element signature="e#1914#1988#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

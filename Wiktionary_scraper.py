@@ -10,7 +10,7 @@ import csv
 
 def pronunciations_from_wiktionary(word):
     word = word.lower()
-    print("Fetching pronunciations for: %s\n" %word)
+    # print("Fetching pronunciations for: %s\n" %word)
     soup = BeautifulSoup(requests.get('https://en.wiktionary.org/wiki/%s' % word).content, 'lxml')
 
     try:
@@ -30,7 +30,7 @@ def pronunciations_from_wiktionary(word):
     return pronunciations
 
 def pronunciations_from_wiktionary_french(word):
-    print("Fetching pronunciations for: %s\n" %word)
+    # print("Fetching pronunciations for: %s\n" %word)
     soup = BeautifulSoup(requests.get('https://fr.wiktionary.org/wiki/%s' % word).content, 'lxml')
 
     # This is French, we don't worry about multiple pronunciations. Vive l'Académie !
