@@ -82,7 +82,6 @@ class PhoneticModel:
                 print("\t\t"+pronunciation.ipa)
 
 
-
 class Word:
 
     def __init__(self, spelling):
@@ -102,18 +101,20 @@ class Pronunciation:
         self.frequency = 1
         self.syllabified = []
 
+
 class Syllable:
 
     def __init__(self,spelling):
         self.spelling = spelling
         self.frequency = 1
-
+# store most frequent successors/predecessors
 
 class PhoneticSyllable:
 
     def __init__(self, ipa):
         self.ipa = ipa
         self.frequency = 1
+# store most frequent successors/predecessors
 
 
 testmodel = PhoneticModel();
