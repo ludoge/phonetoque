@@ -5,13 +5,16 @@ import collections
 import operator
 import pickle
 import math
+import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 filename = "1000Pron_pruned.txt"
 file = open(filename, 'r', encoding="utf8")
 separators = file.readline().replace("\n", "").split(" ")
 pronunciationList = file.read().splitlines()[1:]
 
-allSyllables=[]
+allSyllables = []
+
 
 def possibleSplitPatterns(n):
     if n <= 1:
@@ -23,6 +26,7 @@ def possibleSplitPatterns(n):
             res.append(pattern+[n-1])
         return res
 
+
 def generatePatternsUpTo(n):
     patterns = [[[0]]]
     try:
@@ -32,12 +36,22 @@ def generatePatternsUpTo(n):
         pass
     k = len(patterns)
     for i in range(k,n):
-        print(i)
+        #print(i)
         previous = patterns[i-1]
         patterns.append(previous[:])
         for pattern in previous:
             patterns[i].append(pattern+[i])
     return patterns
+
+def simplifyEnglishPronunciation(str):
+    res = str
+    unnecessarySymbols = ["ˀ","ʰ","ʷ"]
+    # first, remove aspiration, palatalization, glottalization...
+    for symbol in unnecessarySymbols:
+        res = res.replace(symbol, "")
+    return res
+
+
 
 def writePatterns(n):
     patterns = generatePatternsUpTo(n)
@@ -63,6 +77,7 @@ def splitBy(word, pattern):
 
 for pronunciation in pronunciationList:
     w = copy.copy(pronunciation)
+    w = simplifyEnglishPronunciation(w)
     for i in range(1,len(separators)):
         w = w.replace(separators[i],separators[0]) #makes split much easier
     w = w.replace("(","").replace(")","").replace("ː","").replace(" ","")
@@ -87,12 +102,14 @@ def writeSyllableFrequencies(countedSyllableDict, filename):
 
 def splitScore(splitWord, countedSyllableDict):#takes a list of strings representing syllables and a frequency dictionary
     result = 1
-    minfreq = 0.000000000007 #frequency used for unknown syllables
+    minfreq = 0.00007#frequency used for unknown syllables
     for syllable in splitWord:
         try:
             result *= (countedSyllableDict[syllable])
         except:
-            result *= minfreq
+            result *= minfreq**(math.sqrt(len(syllable)))
+    #print(len(splitWord)/len("".join(splitWord)))
+    #result = math.pow(result,(len(splitWord)/len("".join(splitWord))))
     return result
 
 
@@ -118,12 +135,12 @@ print(len(distinctSyllables))
 
 allsplits = generatePatternsUpTo(10)
 
-word = "tɛləvɪʒən"
+word = "ənælɪsɪs"
 
 bestSplit=[]
 bestScore=-100000
 
-splits = possibleSplits(word)
+splits = possibleSplits(word)[:]
 
 for split in splits:
     score = splitScore(split,countedSyllables)
@@ -135,5 +152,38 @@ for split in splits:
 print("\n")
 print(bestSplit)
 print(bestScore)
+
+#print(splitScore(["kən","fjuz"],countedSyllables))
+#print(splitScore(["kən","f","juz"],countedSyllables))
+
+frequencies = list(countedSyllables.values())
+frequencies.sort()
+
+frequencies = frequencies[::-1]
+frequencies = frequencies[:len(frequencies)//1]
+ranks = range(1,len(frequencies)+1)
+
+logfrequencies = [math.log(x) for x in frequencies]
+logranks = [math.log(x) for x in ranks]
+
+#print(frequencies[0])
+#print(frequencies[9])
+"""
+#plt.plot(ranks, frequencies)
+plt.plot(logranks, logfrequencies, label='log(fréquence)')
+
+slope, intercept, r_value, p_value, std_err = linregress(logranks, logfrequencies)
+
+plt.xlabel("log(rang)")
+
+fitted = [intercept + slope*x for x in logranks]
+lmbd = math.exp(intercept)
+
+plt.plot(logranks, fitted, 'r', label='régression')
+plt.text(5, -5, f'λ = {str(lmbd)[:6]}')
+plt.legend()
+plt.show()
+"""
+
 
 writeSyllableFrequencies(countedSyllables,"sylllable_freqs.txt")

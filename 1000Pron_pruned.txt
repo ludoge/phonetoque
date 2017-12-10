@@ -17,7 +17,7 @@ a
 ˌækˈsɛpt
 əkˈsɛpt
 əˈkɔ.ːdɪŋ
-ə.ˈkɔ.ɹd.ɪŋ
+ə.ˈkɔɹ.dɪŋ
 ə.ˈkaʊnt
 əˈkɹɒs
 əˈkɹɔs
@@ -1725,3 +1725,7 @@ jɝ
 jɔːˈself
 jɚˈsɛlf
 jʊɹˈsɛlf
+ɛəɹ.kɹæft
+ɪn.kɹɛ.də.bəl
+ɔs.əm
+kən.fjuzd
