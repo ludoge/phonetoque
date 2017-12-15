@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import time
 from lxml import html
 import requests
 import re
@@ -11,22 +11,32 @@ import csv
 def pronunciations_from_wiktionary(word):
     word = word.lower()
     print("Fetching pronunciations for: %s" %word)
-    soup = BeautifulSoup(requests.get('https://en.wiktionary.org/wiki/%s' % word).content, 'lxml')
+    try:
+        request = requests.get('https://en.wiktionary.org/wiki/%s' % word).content
+    except:
+        print("Request failed, trying again")
+        time.sleep(10)
+        return pronunciations_from_wiktionary(word)
+    soup = BeautifulSoup(request, 'lxml')
 
     try:
         first_section_break = soup.find("hr")
 
         # Section switches to other languages after <hr>
-        pronunciations = first_section_break.find_all_previous('span', class_="IPA")
+        raw_pronunciations = first_section_break.find_all_previous('span', class_="IPA")
 
-    except AttributeError:
-        pronunciations = soup.find_all('span', class_="IPA")
+    except:
+        raw_pronunciations = soup.find_all('span', class_="IPA")
+
+
+    #raw_pronunciations = soup.find_all('span', class_="IPA")
 
     # Difference between the two IPA syntaxes left for later
     regex = re.compile('^[/\[].*[/\]]$')
 
     # Removing tags and eventual parasites (see: penis)
-    pronunciations = [x.text.replace("/","/").replace("[","[").replace("]","]") for x in pronunciations if regex.search(x.text) and ('.' in x.text or len(x.text)<4) or (('ˌ' in x.text or 'ˈ' in x.text) and len(x.text)<14)]
+    #pronunciations = [x.text.replace("/","/").replace("[","[").replace("]","]") for x in raw_pronunciations if regex.search(x.text) and ('.' in x.text or len(x.text)<4) or (('ˌ' in x.text or 'ˈ' in x.text) and len(x.text)<14)]
+    pronunciations = [x.text for x in raw_pronunciations if not "-" in x.text]
     print("Found pronunciations: ")
     for p in pronunciations: print(p)
 
@@ -77,14 +87,45 @@ def write_to_csv(dictionary, filename):
     file = open(filename, 'w+', encoding="utf-8")
     for word in dictionary:
         if len(dictionary[word])>0:
-            #file.write(word)
+            file.write(word)
+            file.write(" ")
             #file.write(':')
             for pronunciation in dictionary[word]:
                 file.write(pronunciation+"\n")
             #file.write("\n")
     file.close()
 
+def write_line_by_line(words, filename):
+    """
+    Improved function to fetch pronunciations from a wordlist, allows to interrupt and resume scraping
+    :param words:
+    :param filename:
+    :return:
+    """
+    already_fetched = []
+    try:
+        with open(filename, 'r+', encoding='utf-8') as file:
+            already_fetched = [x.split(" ")[0] for x in file.read().splitlines()]
+        os.rename(filename, filename+".previous")
+    except:
+        pass
 
+    #print(already_fetched)
+    new_words = [x for x in words if x not in already_fetched]
+    #print(new_words)
+    if new_words == []:
+        with open(filename, "a+", encoding="utf-8") as file:
+            file.write(". ˈ ˌ -")
+
+    for word in new_words:
+        with open(filename, 'a+', encoding="utf-8") as file:
+            prons = pronunciations_from_wiktionary(word)
+            if len(prons)>=0:
+                file.write(word)
+                file.write(" ")
+                for pron in prons:
+                    file.write(pron+" ")
+                file.write("\n")
 
 
 if __name__ == '__main__':
@@ -93,5 +134,6 @@ if __name__ == '__main__':
     #   print(pronunciations_from_wiktionary(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
-    # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("1000CommonWords.txt")),"1000Pron.txt")
-    pronunciations_from_wiktionary_list(read_wordlist("10Words.txt"))
+    # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("google10k.txt")),"10kpron.txt")
+    # pronunciations_from_wiktionary_list(read_wordlist("10Words.txt"))
+    write_line_by_line(read_wordlist("1000CommonWords.txt"),"1000Pron.txt")
