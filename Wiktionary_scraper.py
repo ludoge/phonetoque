@@ -63,6 +63,22 @@ def pronunciations_from_wiktionary_french(word):
 
     return [pronunciation]
 
+def pronunciations_from_wiktionary_italian(word):
+    print("Fetching pronunciations for: %s\n" %word)
+    soup = BeautifulSoup(requests.get('https://it.wiktionary.org/wiki/%s' % word).content, 'lxml')
+
+    try:
+        # In Italian there is only one pronunciation
+        pronunciation = soup.find('span', class_="IPA").text
+        
+         # regex = re.compile('^[/\[\\].*[/\\\]]$')
+        pronunciation = "/"+pronunciation.replace("\\","")+"/"
+        return [pronunciation]
+
+    except AttributeError:
+        print("Can't find pronunciation for", word)
+
+
 
 def pronunciations_from_wiktionary_list(words):
     pronunciations_dictionary = {word: pronunciations_from_wiktionary(word) for word in words}
