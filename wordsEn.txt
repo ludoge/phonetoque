@@ -40507,7 +40507,8 @@ glanced
 glances
 glancing
 glancingly
-gland
+gland
+
 glanders
 glandes
 glands
@@ -55294,7 +55295,6 @@ loadstone
 loadstones
 loaf
 loafed
-loafer
 loafers
 loafing
 loafs
@@ -64309,7 +64309,6 @@ novice
 novices
 novitiate
 novitiates
-novo
 novocain
 novocaine
 now
@@ -76151,7 +76150,6 @@ qualmishly
 qualmishness
 qualms
 qualmy
-quam
 quandaries
 quandary
 quando
@@ -76299,7 +76297,6 @@ queller
 quellers
 quelling
 quells
-quem
 quench
 quenchable
 quenched
