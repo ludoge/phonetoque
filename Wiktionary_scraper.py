@@ -45,11 +45,12 @@ def pronunciations_from_wiktionary(word):
 def pronunciations_from_wiktionary_french(word):
     # print("Fetching pronunciations for: %s\n" %word)
     soup = BeautifulSoup(requests.get('https://fr.wiktionary.org/wiki/%s' % word).content, 'lxml')
-
     # This is French, we don't worry about multiple pronunciations. Vive l'Académie !
-    pronunciation = soup.find('span', class_="API").text
-
-    # Difference between the two IPA syntaxes left for later
+    try:
+        pronunciation = soup.find('span', class_="API").text
+    except AttributeError:
+        print("Can't find pronunciation for", word)
+        pronunciation = ""
     # regex = re.compile('^[/\[\\].*[/\\\]]$')
 
     # Removing tags and eventual parasites (see: penis)
@@ -58,10 +59,11 @@ def pronunciations_from_wiktionary_french(word):
     pronunciation = pronunciation.replace("[","")
     pronunciation = pronunciation.replace("]","")
     pronunciation = pronunciation.replace("/","")
-
     pronunciation = pronunciation.replace("\\","")
+    pronunciation = "/%s/" %pronunciation
 
     return [pronunciation]
+
 
 def pronunciations_from_wiktionary_italian(word):
     print("Fetching pronunciations for: %s\n" %word)
@@ -70,14 +72,18 @@ def pronunciations_from_wiktionary_italian(word):
     try:
         # In Italian there is only one pronunciation
         pronunciation = soup.find('span', class_="IPA").text
-        
-         # regex = re.compile('^[/\[\\].*[/\\\]]$')
-        pronunciation = "/"+pronunciation.replace("\\","")+"/"
-        return [pronunciation]
-
     except AttributeError:
         print("Can't find pronunciation for", word)
+        pronunciation = ""
 
+    # regex = re.compile('^[/\[\\].*[/\\\]]$')
+    pronunciation = pronunciation.replace("[","")
+    pronunciation = pronunciation.replace("]","")
+    pronunciation = pronunciation.replace("/","")
+    pronunciation = pronunciation.replace("\\","")
+    pronunciation = "/%s/" %pronunciation
+
+    return [pronunciation]
 
 
 def pronunciations_from_wiktionary_list(words):
@@ -91,8 +97,14 @@ def read_csv(filename):
 
 
 def read_wordlist(filename):
-    file = open(filename, 'r')
+    file = open(filename, 'r', encoding="utf-8")
     return file.read().split("\n")
+
+def write_wordlist(filename, wordlist):
+    file = open(filename, 'w', encoding="utf-8")
+    for word in wordlist:
+        file.write(word)
+        file.write("\n")
 
 
 def write_to_csv(dictionary, filename):
@@ -111,7 +123,7 @@ def write_to_csv(dictionary, filename):
             #file.write("\n")
     file.close()
 
-def write_line_by_line(words, filename):
+def write_line_by_line(words, filename, language):
     """
     Improved function to fetch pronunciations from a wordlist, allows to interrupt and resume scraping
     :param words:
@@ -135,7 +147,14 @@ def write_line_by_line(words, filename):
 
     for word in new_words:
         with open(filename, 'a+', encoding="utf-8") as file:
-            prons = pronunciations_from_wiktionary(word)
+            if language == 'english':
+                prons = pronunciations_from_wiktionary(word)
+            elif language == 'italian':
+                prons = pronunciations_from_wiktionary_italian(word)
+            elif language == 'french':
+                prons = pronunciations_from_wiktionary_french(word)
+            else:
+                print("We don't have %s yet" %language)    
             if len(prons)>=0:
                 file.write(word)
                 file.write(" ")
@@ -152,4 +171,4 @@ if __name__ == '__main__':
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
     # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("google10k.txt")),"10kpron.txt")
     # pronunciations_from_wiktionary_list(read_wordlist("10Words.txt"))
-    write_line_by_line(read_wordlist("1000CommonWords.txt"),"1000Pron.txt")
+    write_line_by_line(read_wordlist("1000CommonWords.txt"),"1000Pron.txt", 'english')
