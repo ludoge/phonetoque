@@ -148,8 +148,11 @@ if __name__ == '__main__':
     # while True:
     #   word = input("Enter an English word: \n")
     #   print(pronunciations_from_wiktionary(word))
+    #while True:
+    #   word = input("Enter an Italian word: \n")
+    #   print(pronunciations_from_wiktionary_italian(word))
     # print(pronunciations_from_wiktionary_list(["cat","dog"]))
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
     # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("google10k.txt")),"10kpron.txt")
     # pronunciations_from_wiktionary_list(read_wordlist("10Words.txt"))
-    write_line_by_line(read_wordlist("1000CommonWords.txt"),"1000Pron.txt")
+    write_line_by_line(read_wordlist("50Words.txt"),"testtest.txt")
