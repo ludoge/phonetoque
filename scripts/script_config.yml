@@ -1,0 +1,48 @@
+scraper_languages:
+  - english
+  - french
+  - italian
+
+stop_chars:
+  ᵊ̰̚˞͡ˀ̪̃ʔʰ˩˥ʲ̟̯̬​ˠ̞ʷʱ̝ˁ̻cǀˑ̥̹ˢ̺ː̈
+
+separators:
+  .ˈˌ-
+
+vowels:
+  iyɨʉɯuɪʏɪʊeøɘɵɤoe̞ø̞əɤ̞o̞ɛœɜɞʌɔæɐaɶäɑɒ
+
+simplifying:
+  english:
+    ä:  a
+    ɟ:  g
+    á:  a
+    ɚ: əɹ
+    ʍ: w
+    ɝ: əɹ
+    ɘ: ɪ
+    õ: ɔn
+    ɱ: m
+    œ: ""
+    ʋ: w
+    ɯ: ə
+    ɻ: ɹ
+    ɧ: ʃ
+    ɬ: l
+    ã: a
+    ɕ: ʃ
+    ɲ: nj
+    ç: h
+    ẽ: e
+    ɦ: h
+    g: ɡ
+    ĭ: ɪ
+    ĩ: ɪ
+    ʏ: ʊ
+    χ: x
+    ŏ: ə
+    ɥ: ju
+    ɵ: ɔ
+    ʎ: j
+    ʝ: j
+    έ: e

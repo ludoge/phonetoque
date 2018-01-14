@@ -1,3 +1,5 @@
 #pattern data, gets VERY big
 
 *.patterns
+*.xml
+*.pyc
