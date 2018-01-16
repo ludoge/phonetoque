@@ -12,25 +12,11 @@ if __name__ == '__main__':
     parser.add_argument('--conf', help='path to configuration file for scripts', default='scripts/script_config.yml')
     args = parser.parse_args()
     if args.action in available_actions:
-        try:
-            required_args = __import__(f'scripts.{args.action}', globals(), locals(), ['hello'], 0).required_arguments
-        except AttributeError:
-            required_args = []
-        all_args_good = True
-        for required_arg in required_args:
-            if not required_arg.replace("-","") in args.__dict__:
-                #all_args_good = False
-                #parser.error(f'Required argument {required_arg} for {args.action} must be specified')
-                pass
-            pass
-        if not all_args_good:
-            os.system(f'python scripts/{args.action}.py -h')
-        #print([x for x in args.__dict__])
-
         formatted_args = " ".join([f"{'--' if len(x)>1 else '-'}{x} {args.__dict__[x]}"
                                    for x in args.__dict__ if args.__dict__[x] is not None and not x == "action"])
-        #print (formatted_args)
 
-        os.system(f'python scripts/{args.action}.py '+formatted_args)
+        # print (formatted_args)
+
+        os.system(f'python -m scripts.{args.action} ' + formatted_args)
     else:
-        parser.error(f'Invalid scripts. Valid scripts are: {", ".join(available_actions)}')
+        parser.error(f'Invalid script. Valid scripts are: {", ".join(available_actions)}')
