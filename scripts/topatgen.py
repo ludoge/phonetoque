@@ -1,8 +1,6 @@
 import argparse
-import sys
-sys.path.append('src')  # if there is a better way, please tell me
-import string_cleanup as sc
-import syllables as sy
+import src.string_cleanup as sc
+import src.syllables as sy
 import yaml
 
 if __name__ == '__main__':
@@ -18,12 +16,16 @@ if __name__ == '__main__':
 
     config['simplifying'] = config['simplifying'][args.language]
 
-    raw_prons = sc.read_pronunciation_file_as_list(args.input_file)
-    cleaned_prons = [sc.cleanup(x, config) for x in raw_prons if not sc.cleanup(x, config) == '']
-    known_syllables = sy.get_known_syllables(cleaned_prons, config)
+    cleaner = sc.StringCleanup(config)
+    raw_prons = cleaner.read_pronunciation_file_as_list(args.input_file)
+    cleaned_prons = [cleaner.cleanup(x) for x in raw_prons if not cleaner.cleanup(x) == '']
 
-    syllabified_prons = prons = [sc.simplify_separators(x,config) for x in cleaned_prons if sy.is_syllabified(x, config, known_syllables)]
+    sc = sy.SyllableProcessor(config, cleaned_prons)
+    sc.get_known_syllables()
+
+    syllabified_prons = [cleaner.simplify_separators(x) for x in cleaned_prons if sc.is_syllabified(x)]
 
     with open(args.output_file, mode='w', encoding='utf-8') as f:
         for pron in syllabified_prons:
+            print(pron)
             f.write(f"{pron}\n")

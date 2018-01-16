@@ -1,9 +1,5 @@
 import argparse
-import os
-import sys
-sys.path.append('src')  # if there is a better way, please tell me
-import wiktionary_scraper as ws
-import string_cleanup as sc
+import src.wiktionary_scraper as ws
 import yaml
 
 if __name__ == '__main__':
