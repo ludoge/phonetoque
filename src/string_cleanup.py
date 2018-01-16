@@ -2,12 +2,20 @@ import re
 
 
 class StringCleanup:
+    """
+    A module created to factor out common string cleanup operations done across most scripts
+    """
     def __init__(self, config):
         self.separators = config['separators']
         self.simplifying = config['simplifying']
         self.stop_chars = config['stop_chars']
 
     def read_pronunciation_file_as_dict(self, filename):
+        """
+        Reads the output of wiktionary_scraper.write_line_by_line as {word: [pronunciations]}
+        :param filename:
+        :return:
+        """
         data = open(filename, mode="r", encoding="utf8").read()
         dictionary = {}
         for line in data.splitlines():
@@ -15,6 +23,11 @@ class StringCleanup:
         return dictionary
 
     def read_pronunciation_file_as_list(self, filename):
+        """
+        Reads the output of wiktionary_scraper.write_line_by_line as [pronunciations]
+        :param filename:
+        :return:
+        """
         data = open(filename, mode="r", encoding="utf8").read()
         res = []
         for line in data.splitlines():
@@ -40,6 +53,11 @@ class StringCleanup:
         return res
 
     def simplify_chars(self, string):
+        """
+        Replaces uncommon characters with more usual ones as defined in the configuration
+        :param string:
+        :return:
+        """
         s = lambda x: self.simplifying[x] if x in self.simplifying else x
         res = "".join(list(map(s,string)))
         return res

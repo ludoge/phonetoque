@@ -1,4 +1,7 @@
 class SyllableProcessor:
+    """
+    A module for detecting already syllabified pronunciations in scraped data
+    """
     def __init__(self, config, prons=[]):
         self.vowels = config['vowels']
         self.pronunciations = prons
