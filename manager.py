@@ -9,6 +9,7 @@ if __name__ == '__main__':
     parser.add_argument('--language', help='specify the language of the data used')
     parser.add_argument('-i')
     parser.add_argument('-o')
+    parser.add_argument('--conf', help='path to configuration file for scripts', default='scripts/script_config.yml')
     args = parser.parse_args()
     if args.action in available_actions:
         try:
