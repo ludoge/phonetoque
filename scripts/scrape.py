@@ -22,5 +22,6 @@ if __name__ == '__main__':
         parser.error(f"Language \"{args.language}\" not available."
                      f"\nAvailable languages: {' ,'.join(available_languages)} ")
 
-    word_list = ws.read_word_list(args.input_file)
-    ws.write_line_by_line(word_list, args.output_file, args.language)
+    scraper = ws.Scraper(args.language)
+    scraper.read_word_list(args.input_file)
+    scraper.write_line_by_line(args.output_file)
