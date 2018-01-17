@@ -19,7 +19,11 @@ class StringCleanup:
         data = open(filename, mode="r", encoding="utf8").read()
         dictionary = {}
         for line in data.splitlines():
-            dictionary[line.split()[0]] = line.split()[1:]
+            if line.split():
+                try:
+                    dictionary[line.split()[0]] = line.split()[1:]
+                except IndexError:
+                    dictionary[line.split()[0]] = []
         return dictionary
 
     def read_pronunciation_file_as_list(self, filename):
@@ -51,6 +55,14 @@ class StringCleanup:
         res = string.translate(str.maketrans(self.separators, ' '*len(self.separators))).strip().replace(' ','-')
         res = re.sub(r'(-)\1+', r'\1', res)
         return res
+
+    def strip_separators(self, string):
+        """
+        Removes all separators from a string
+        :param string:
+        :return:
+        """
+        return string.translate(str.maketrans(self.separators, ' ' * len(self.separators))).replace(' ', '')
 
     def simplify_chars(self, string):
         """
