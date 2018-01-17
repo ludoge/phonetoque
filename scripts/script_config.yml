@@ -12,6 +12,17 @@ separators:
 vowels:
   iyɨʉɯuɪʏɪʊeøɘɵɤoe̞ø̞əɤ̞o̞ɛœɜɞʌɔæɐaɶäɑɒ
 
+
+# For use with pyphen
+hyphenation_dict:
+  english: en
+
+ipa_hyphenation_dict:
+  english: ipa_en
+
+server_url:
+  http://127.0.0.1:5000
+
 simplifying:
   english:
     ä:  a
