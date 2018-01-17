@@ -1,6 +1,6 @@
-class SyllableProcessor:
+class SyllableProcessor(object):
     """
-    A module for detecting already syllabified pronunciations in scraped data
+    A class for detecting already syllabified pronunciations in scraped data
     """
     def __init__(self, config, prons=[]):
         self.vowels = config['vowels']
@@ -51,7 +51,8 @@ class SyllableProcessor:
 
     def has_single_vowel_group(self, pron):
         """
-        detects if a pronunciation only contains a single vowel or group thereof, which usually means it is monosyllabic
+        detects if a pronunciation only contains a single vowel
+         or group thereof, which usually means it is monosyllabic
         :param pron:
         :return:
         """

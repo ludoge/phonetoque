@@ -1,9 +1,9 @@
 import re
 
 
-class StringCleanup:
+class StringCleanup(object):
     """
-    A module created to factor out common string cleanup operations done across most scripts
+    A class created to factor out common string cleanup operations done across most scripts
     """
     def __init__(self, config):
         self.separators = config['separators']

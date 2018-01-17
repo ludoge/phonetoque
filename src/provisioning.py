@@ -1,9 +1,13 @@
 import json
+import logging
 import pyphen
 import requests
 
 
-class PhonetoqueRequest:
+class PhonetoqueRequest(object):
+    """
+    Prepares and posts pronunciation data to the REST API defined in configuration
+    """
     def __init__(self, config):
         self.language = config['language']
         self.hyphenation_dict = pyphen.Pyphen(lang=config['hyphenation_dict'])
@@ -12,6 +16,10 @@ class PhonetoqueRequest:
         self.pronunciations = {}
 
     def prepare_data(self):
+        """
+        Syllabifies words and pronunciations
+        :return:
+        """
         self.pronunciations = {self.hyphenation_dict.inserted(k): [self.ipa_hyphenation_dict.inserted(x) for x in v]
                                for k, v in self.pronunciations.items()}
 
@@ -31,7 +39,7 @@ class PhonetoqueRequest:
             }
             response = requests.post(f"{self.url}/{self.language}_words/", headers={'Content-Type': 'application/json'},
                                  data=json.dumps(payload))
-            print(response.text)
+            logging.info(response.text)
 
     def post_all(self):
         for word in self.pronunciations:
