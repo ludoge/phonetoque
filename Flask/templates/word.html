@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+
+{% block titre %} {{word[spelling]}} {% endblock %}
+
+{% block corps %}
+    <h1> Mot : {{self.title}} </h1>
+    <p>
+        word
+        {{word}}
+    </p>
+    <p>
+        get json
+        {{word.get_json}}
+        {{word.get_json['result']}}
+    </p>
+
+{% endblock %}
+

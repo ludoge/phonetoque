@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, render_template
 from flask_pymongo import PyMongo
 
 app = Flask(__name__)
@@ -8,6 +8,13 @@ app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/pho
 app.config['JSON_AS_ASCII'] = False
 
 mongo = PyMongo(app)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        return get_all_words(request.form['language'],request.form['word'])
+    return render_template('index.html')
+
 
 @app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
 @app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
@@ -32,7 +39,7 @@ def get_all_words(language, word):
             output = result
         else:
             output = 'This word is not in our database'
-        return jsonify({'result': output})
+        return render_template('word.html', word=jsonify({'result': output}))
 
 @app.route('/<language>_words/', methods=['POST'])
 def add_word(language):
