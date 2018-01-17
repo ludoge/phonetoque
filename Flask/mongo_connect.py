@@ -97,10 +97,10 @@ def add_syllables(language):
         all_syllables = mongo.db.italian_syllables
     data = request.get_json()
     # nettoyer et transformer les donnees client
-    if language == data['language']:
-        pass
-    else:
-        raise ValueError('word entered in wrong language')
+    # if language == data['language']:
+    #     pass
+    # else:
+    #     raise ValueError('word entered in wrong language')
     ipa_syllable = data['ipa_syllable']
     orthographical_syllable = data['orthographical_syllable']
     preceding_ipa_syllable = data['preceding_syllable']

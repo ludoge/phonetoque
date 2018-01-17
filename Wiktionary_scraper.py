@@ -1,11 +1,9 @@
-# coding: utf-8
-import time
-from lxml import html
-import requests
-import re
-from bs4 import BeautifulSoup
 import os
-import csv
+import re
+import requests
+import time
+from bs4 import BeautifulSoup
+
 
 
 def pronunciations_from_wiktionary(word):
@@ -174,4 +172,4 @@ if __name__ == '__main__':
     # print(pronunciations_from_wiktionary_list(read_wordlist("wordsEn.txt")))
     # write_to_csv(pronunciations_from_wiktionary_list(read_wordlist("google10k.txt")),"10kpron.txt")
     # pronunciations_from_wiktionary_list(read_wordlist("10Words.txt"))
-    write_line_by_line(read_wordlist("50Words.txt"),"testtest.txt")
+    write_line_by_line(read_wordlist("1000CommonWords.txt"),"1000Pron.txt", 'english')
