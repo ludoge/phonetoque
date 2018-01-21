@@ -1,5 +1,9 @@
-from flask import Flask, request, jsonify, make_response, render_template
+from flask import Flask, request, jsonify, make_response, render_template, Response
 from flask_pymongo import PyMongo
+from Words import *
+import json
+from json import *
+import jinja2
 
 app = Flask(__name__)
 
@@ -9,46 +13,104 @@ app.config['JSON_AS_ASCII'] = False
 
 mongo = PyMongo(app)
 
+
+# ------------------ Routes Debug ------------------------ #
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        return get_all_words(request.form['language'],request.form['word'])
+        try:
+            result = get_word(request.form['language'],request.form['word'])
+            JSON = json.dumps(result)
+            word = loads(JSON)
+            return render_template('word.html', word=word, mod=False)
+        except jinja2.exceptions.UndefinedError:
+            render_template('error.html')
     return render_template('index.html')
+
+
+@app.route('/modify_word', methods=['GET', 'POST'])
+def modify():
+    if request.method == 'POST':
+        # on récupère les champs entrées dans word.html
+        item = json.dumps(request.form)
+        insert = loads(item)
+        # on met en forme
+        insert['syllables'] = insert['syllables'].split('.')
+        insert['syllables_ipa']=insert['syllables_ipa'].split('.')
+        # on se place dans la bonne collection puis on insère
+        collection = get_collection(insert['language'])
+        collection.insert(insert)
+        return render_template('word.html',word=insert,mod=True)
+    else:
+        return render_template('error.html'), 404
+
+
+@app.route('/add_word', methods=['GET', 'POST'])
+def new_word():
+    if request.method == 'POST':
+        item = json.dumps(request.form)
+        insert = loads(item)
+        # on met en forme
+        insert['syllables'] = insert['syllables'].split('.')
+        insert['syllables_ipa'] = insert['syllables_ipa'].split('.')
+        # on se place dans la bonne collection puis on insère
+        collection = get_collection(insert['language'])
+        collection.insert(insert)
+        return render_template('word.html', word=insert, mod=True)
+    else:
+        default = {'language':'english', 'spelling':'', 'spelling_ipa':'', 'syllables':[], 'syllables_ipa':[] }
+        return render_template('word.html',word=default,mod=False)
+
+
+# ------------------ Fonctions générales ------------------------ #
+
+
+def get_collection(language):
+    # on se place dans la collection correspondant à la langue choisie
+    if language == 'english':
+        collection = mongo.db.english_words
+    elif language == 'french':
+        collection = mongo.db.french_words
+    elif language == 'italian':
+        collection = mongo.db.italian_words
+    else:
+        collection = None
+    return collection
+
+
+def get_word(language,word):
+    # on va selectioner la table selon la langue choisie
+    all_words = get_collection(language)
+    if word == "":
+        output = []
+        for word in all_words.find():
+            del word['_id']  # the value of this key is an ObjectId which is not JSON serializable
+            output.append(word)
+    else:
+        result = all_words.find_one({'spelling': word})
+        if result:
+            del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
+            output = result
+        else:
+            output = 'This word is not in our database'
+    return output
+
+
+# ------------------ Routes API ------------------------ #
 
 
 @app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
 @app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
 def get_all_words(language, word):
-    # on va selectioner la table selon la langue choisie
-    if language == 'english':
-        all_words = mongo.db.english_words
-    elif language == 'french':
-        all_words = mongo.db.french_words
-    elif language == 'italian':
-        all_words = mongo.db.italian_words
-    if word == "":
-        output = []
-        for word in all_words.find():
-            del word['_id'] #the value of this key is an ObjectId which is not JSON serializable
-            output.append(word)
-        return jsonify({'result': output})
-    else:
-        result = all_words.find_one({'spelling' : word})
-        if result:
-            del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
-            output = result
-        else:
-            output = 'This word is not in our database'
-        return render_template('word.html', word=jsonify({'result': output}))
+    output = get_word(language,word)
+    response = jsonify({'result': output})
+    return response
 
 @app.route('/<language>_words/', methods=['POST'])
 def add_word(language):
-    if language == 'english':
-        all_words = mongo.db.english_words
-    elif language == 'french':
-        all_words = mongo.db.french_words
-    elif language == 'italian':
-        all_words = mongo.db.italian_words
+    all_words = get_collection()
     data = request.get_json()
     # nettoyer et transformer les donnees client
     if language == data['language']:
