@@ -20,15 +20,21 @@ class PhonetoqueRequest(object):
         Syllabifies words and pronunciations
         :return:
         """
-        self.pronunciations = {self.hyphenation_dict.inserted(k): [self.ipa_hyphenation_dict.inserted(x) for x in v]
+        self.pronunciations = {self.hyphenation_dict.inserted("  "+k+"  ").strip():
+                                   [self.ipa_hyphenation_dict.inserted("  "+x+"  ").strip() for x in v]
                                for k, v in self.pronunciations.items()}
 
     def post_to_db(self, word):
-        spelling = word.replace("-","")
-        syllables = word.split("-")
+        spelling = word.replace("-","").lower()
+        syllables = [x for x in word.split("-") if x != '']
+
         for pronunciation in self.pronunciations[word]:
             spelling_ipa = pronunciation.replace("-","")
-            syllables_ipa = pronunciation.split("-")
+            syllables_ipa = [x for x in pronunciation.split("-") if x!= '']
+
+            if self.language == 'french':
+                if spelling[-1] == 'e' and len(syllables) == len(syllables_ipa)+1 and len(syllables) >= 2:
+                    syllables = syllables[:-2]+[syllables[-2]+syllables[-1]]
 
             payload = {
                 "language": self.language,
