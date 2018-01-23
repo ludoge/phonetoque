@@ -1,0 +1,20 @@
+hyphenation_dict: {english: en}
+ipa_hyphenation_dict: {english: ipa_en}
+scraper_languages: [english, french, italian]
+separators: ".\u02C8\u02CC-"
+server_url: http://127.0.0.1:5000
+simplifying:
+  english: {g: "\u0261", "\xE1": a, "\xE3": a, "\xE4": a, "\xE7": h, "\xF5": "\u0254n",
+    "\u0129": "\u026A", "\u012D": "\u026A", "\u014F": "\u0259", "\u0153": '', "\u0255": "\u0283",
+    "\u0258": "\u026A", "\u025A": "\u0259\u0279", "\u025D": "\u0259\u0279", "\u025F": g,
+    "\u0265": ju, "\u0266": h, "\u0267": "\u0283", "\u026C": l, "\u026F": "\u0259",
+    "\u0271": m, "\u0272": nj, "\u0275": "\u0254", "\u027B": "\u0279", "\u028B": w,
+    "\u028D": w, "\u028E": j, "\u028F": "\u028A", "\u029D": j, "\u03AD": e, "\u03C7": x,
+    "\u1EBD": e}
+  french: {a: a}
+stop_chars: "\u1D4A\u0330\u031A\u02DE\u0361\u02C0\u032A\u0294\u02B0\u02E9\u02E5l\u0329\
+  \u02B2\u031F\u032F\u032C\u200B\u02E0\u031E\u02B7\u02B1\u031D\u02C1\u033Bc\u01C0\u02D1\
+  \u0325\u0339\u02E2\u033A\u02D0\u0308"
+vowels: "iy\u0268\u0289\u026Fu\u026A\u028F\u026A\u028Ae\xF8\u0258\u0275\u0264oe\u031E\
+  \xF8\u031E\u0259\u0264\u031Eo\u031E\u025B\u0153\u025C\u025E\u028C\u0254\xE6\u0250\
+  a\u0276\xE4\u0251\u0252"
