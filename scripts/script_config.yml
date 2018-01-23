@@ -4,7 +4,7 @@ scraper_languages:
   - italian
 
 stop_chars:
-  ᵊ̰̚˞͡ˀ̪̃ʔʰ˩˥l̩ʲ̟̯̬​ˠ̞ʷʱ̝ˁ̻cǀˑ̥̹ˢ̺ː̈
+  ᵊ̰̚˞͡ˀ̪ʔʰ˩˥ʲ̟̯̬ˠ̞ʷʱ̝ˁ̻ǀˑ̥̹ˢ̺ː̈
 
 separators:
   .ˈˌ-
@@ -16,9 +16,11 @@ vowels:
 # For use with pyphen
 hyphenation_dict:
   english: en
+  french: fr
 
 ipa_hyphenation_dict:
   english: ipa_en
+  french: ipa_fr
 
 server_url:
   http://127.0.0.1:5000
@@ -57,3 +59,5 @@ simplifying:
     ʎ: j
     ʝ: j
     έ: e
+  french:
+    a: a

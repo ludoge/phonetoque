@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     cleaner = sc.StringCleanup(config)
     raw_data = cleaner.read_pronunciation_file_as_dict(args.input_file)
-    clean_data = {k: [cleaner.strip_separators(cleaner.cleanup(x)) for x in v] for k,v in raw_data.items()}
+    clean_data = {k: [cleaner.simplify_separators(cleaner.cleanup(x)) for x in v] for k,v in raw_data.items()}
 
     request = pr.PhonetoqueRequest(config)
     request.pronunciations = clean_data
