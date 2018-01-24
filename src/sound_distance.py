@@ -3,6 +3,13 @@ import yaml
 
 
 class SoundDistance(object):
+    """
+    Methods to compute similarity between two sounds, or two syllables, based on properties of sounds as stored in conf
+    This is intended to be used to find, for a given syllable in language A, the most similar possible syllable in
+    language B.
+    Each sound is represented as a unit vector in (number of properties)-dimensional space
+    Similarity is given by scalar (dot) product : see https://en.wikipedia.org/wiki/Cosine_similarity
+    """
     def __init__(self, consonant_conf='src/consonant_properties.yml', vowel_conf='src/vowel_properties.yml'):
         with open(consonant_conf, encoding="utf-8") as f:
             self.consonant_data = yaml.safe_load(f)
@@ -56,7 +63,7 @@ class SoundDistance(object):
     def detect_sounds(self, str):
         """
         Parses a string to detect known sound symbols
-        Necessary because of 0-space chars in sounds (diactitics etc.)
+        Necessary because of 0-space chars in sounds (diacritics etc.)
         :param str:
         :return:
         """
@@ -108,7 +115,7 @@ if __name__ == '__main__':
 
     print(sd.detect_sounds('e̞ø̞'))
 
-    print(sd.syllable_similarity('kæt', 'kɑt'))
+    #print(sd.syllable_similarity('kæt', 'kɑt'))
     print(sd.syllable_similarity('kæt', 'dɔɡ'))
 
     print(sd.syllable_similarity('kæt', 'dʌk'))
