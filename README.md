@@ -1,8 +1,3 @@
----
-
-
----
-
 <h1 id="about">About</h1>
 <p>This is Phonetoque, a tool for phonetic computation intended to serve language learning apps. What you see here is the data collection pipeline for Phonetoque.</p>
 <h1 id="usage">Usage</h1>
