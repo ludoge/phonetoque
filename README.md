@@ -20,7 +20,7 @@
 <h2 id="scrape">Scrape</h2>
 <pre><code>manager.py scrape [-h] --language LANGUAGE -i INPUT_FILE -o OUTPUT_FILE [--conf CONF]
 </code></pre>
-<p>Scrapes <em><a href="http://wikitionary.org">wikitionary.org</a></em> (in the appropriate language) for <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet">IPA</a> pronunciations of a list of words (given in input file, one per line) and writes them to output file in the following format:</p>
+<p>Scrapes <em><a href="http://wiktionary.org">wiktionary.org</a></em> (in the appropriate language) for <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet">IPA</a> pronunciations of a list of words (given in input file, one per line) and writes them to output file in the following format:</p>
 <pre><code>word pronunciation
 word
 word pronunciation pronunciation pronunciation
