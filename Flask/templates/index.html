@@ -3,19 +3,12 @@
 {% block titre %}Page d'accueil{% endblock %}
 
 {% block corps %}
-    <h1> Page d'accueil </h1>
-    <p> Rechercher un mot dans la base de données : </p>
-    <select name="language" form="word">
-        <option value="english">English</option>
-        <option value="french">Français</option>
-        <option value="italian">Italiano</option>
-    </select>
-    <form action="" method="post" id="word">
-        <input type="text" name="word" />
-        <input type="submit" value="Envoyer" />
-    </form>
 
-    <a href='/add_word'> Ajouter un mot </a>
+    <h1> Page d'accueil </h1>
+
+    <p> <a href="/translitteration"> Test de la translittération </a> </p>
+
+    <p> <a href="/database"> Modifier la base de données </a> </p>
 
 {% endblock %}
 

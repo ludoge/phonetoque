@@ -1,3 +1,8 @@
+{% extends "template.html" %}
 
+{% block titre %}Erreur{% endblock %}
+
+{% block corps %}
 <h1> Erreur ! </h1>
-<p> Nous n'avons pas pu accéder à votre requête</p>
+<p style="font-size:30px"> {{message}}</p>
+{% endblock %}

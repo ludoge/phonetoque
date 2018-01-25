@@ -1,0 +1,34 @@
+{% extends "template.html" %}
+
+{% block titre %}Base de données{% endblock %}
+
+{% block corps %}
+    <h1> Modifier la base de données </h1>
+
+
+    <p> Modifier un mot dans la base de données : </p>
+    <select name="language" form="word">
+        <option value="english">English</option>
+        <option value="french">Français</option>
+        <option value="italian">Italiano</option>
+    </select>
+    <form action="" method="post" id="word">
+        <input type="text" name="word" />
+        <input type="submit" value="Modifier" />
+    </form>
+
+    <a href='/add_word'> Ajouter un mot </a>
+
+
+    <p> Rechercher tous les mots ayant la même écriture </p>
+    <select name="language" form="all_words">
+        <option value="english">English</option>
+        <option value="french">Français</option>
+        <option value="italian">Italiano</option>
+    </select>
+    <form action="/all_words/" method="post" id="all_words">
+        <input type="text" name="spelling" />
+        <input type="submit" value="Rechercher" />
+    </form>
+
+{% endblock %}
