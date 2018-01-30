@@ -29,8 +29,8 @@ class PhonetoqueRequest(object):
                                for k, v in self.pronunciations.items()}
 
     def post_word_to_db(self, word):
-        spelling = word.replace("-","")
-        syllables = word.split("-")
+        spelling = word.replace("-", "").lower()
+        syllables = [x for x in word.split("-") if x != '']
         for pronunciation in self.pronunciations[word]:
             spelling_ipa = pronunciation.replace("-","")
             syllables_ipa = [x for x in pronunciation.split("-") if x!= '']
