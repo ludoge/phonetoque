@@ -90,9 +90,6 @@ class Scraper(object):
         except AttributeError:  # not found !
             logging.error("No pronunciation found for "+ word)
 
-
-
-
     def pronunciations_from_wiktionary_italian(self,word):
         """
         Fetches pronunciation from it.wiktionary.org
@@ -112,7 +109,7 @@ class Scraper(object):
             self.pronunciations[word] = [pronunciation]
 
         except AttributeError:
-            logging.info("No pronunciation found for "+ word)
+            logging.error("No pronunciation found for "+ word)
 
     pronunciations_from_wiktionary = {
         'english': pronunciations_from_wiktionary_english,
@@ -127,7 +124,7 @@ class Scraper(object):
         :return:
         """
         with open(filename, 'r') as f:
-            self.word_list = f.read().split("\n")
+            self.word_list = f.read().split()
 
     def write_line_by_line(self, filename, overwrite=False):
         """
