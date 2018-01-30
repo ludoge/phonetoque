@@ -29,11 +29,11 @@ class Syllables(object):
             of a specific language. The values are a dictionary of orthographical 
             syllabes as keys and occurences as values. 
         """
-        # try:
-        r = requests.get(self.all_words_route)
-        # except requests.exceptions.RequestException as e:
-        #     logging.info("Error with the request:")
-        #     logging.info(e)
+        try:
+            r = requests.get(self.all_words_route)
+        except requests.exceptions.RequestException as e:
+            logging.info("Error with the request:")
+            logging.info(e)
         dico = json.loads(r.content)
         result = dico['result']
         all_syllables_ipa = defaultdict(lambda: defaultdict(int))
@@ -108,6 +108,4 @@ class Syllables(object):
             # the 2 latters are empty for the moment
             print("sending the syllable: {}".format(ipa_syllable))
             self.post_syllable(ipa_syllable, orth_syllable, preceding_syllable, following_syllable)
-    
-
     
