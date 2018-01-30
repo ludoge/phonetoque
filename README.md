@@ -2,7 +2,7 @@
 <p>This is Phonetoque, a tool for phonetic computation intended to serve language learning apps. What you see here is the data collection pipeline for Phonetoque.</p>
 <h1 id="usage">Usage</h1>
 <p>Everything is done through the <em><a href="http://manager.py">manager.py</a></em> script.</p>
-<pre><code>   manager.py [-h] [--language LANGUAGE] [-i I] [-o O] [--conf CONF] script
+<pre><code>   python manager.py [-h] [--language LANGUAGE] [-i I] [-o O] [--conf CONF] script
    Options :
     --language		specify the language input and output data apply to
     --conf			which conf file to use, defaults to /scripts/script_config.yml
