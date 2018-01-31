@@ -113,9 +113,9 @@ def translitterate():
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
                 syll1 = coll_syll_1.find_one({'ipa_syllable':syll})[language2] #phonetique dans la langue 2
                 syllables_ipa2 += [syll1]
-                syll2 = coll_syll_2.find_one({'ipa_syllable':syll1, 'language':language2})['orthographical_syllable'] #orthographique dans la langue 2
+                syll2 = coll_syll_2.find_one({'ipa_syllable':syll1})['orthographical_syllable'] #orthographique dans la langue 2
                 syllables += [syll2]
-            except Exception:
+            except KeyError:
                 syllables_ipa2 += ["~"]
                 syllables += ["~"]
         return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2)
