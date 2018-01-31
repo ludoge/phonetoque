@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    {% block header %}
+        <meta charset="utf-8" />
+        <title>{% block titre %}Titre par défaut{% endblock %}</title>
+    {% endblock %}
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link type="text/css" href="../../Content/Site.css" rel="stylesheet" />
+
+    </head>
+
+    <body>
+        <a href="/"> Retour à l'accueil</a>
+        <br/>
+        {% block corps %}{% endblock %}
+
+        {% block footer %}{% endblock %}
+    </body>
+</html>
+

@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+
+{% block titre %} Résultats {% endblock %}
+
+{% block corps %}
+    <h1>
+        {% if all_words != [] %}
+        Résultats de la recherche "{{all_words[0].spelling}}"
+        {% else %}
+        Aucun résultat trouvé !
+        {% endif %}
+        </h1>
+    {% for word in all_words %}
+    <p>
+        {{word._id}}
+        {{word.spelling_ipa}}
+        {{word.syllables}}
+        {{word.syllables_ipa}}
+    </p>
+    {% endfor %}
+
+{% endblock %}

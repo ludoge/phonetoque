@@ -1,0 +1,55 @@
+{% extends "template.html" %}
+
+{% block titre %} {{word.spelling}} {% endblock %}
+
+{% block corps %}
+    {% if word.spelling == "" %}
+    <h1> Ajout d'un nouveau mot </h1>
+    {% else %}
+    <h1> Modification de "{{word.spelling}}" de la collection "{{word.language}}" </h1>
+    {% endif %}
+
+    <p> Modifier les champs : </p>
+    <p> Language :
+    <select name="language" form="mod_word" value={{word.language}}>
+
+        {% if word.language == "english" %}
+        <option value="english" selected>English</option>
+        {% else %}
+        <option value="english">English</option>
+        {% endif %}
+
+        {% if word.language == "french" %}
+        <option value="french" selected>Français</option>
+        {% else %}
+        <option value="french">Français</option>
+        {% endif %}
+
+        {% if word.language == "italian" %}
+        <option value="italian" selected>Italiano</option>
+        {% else %}
+        <option value="italian">Italiano</option>
+        {% endif %}
+
+    </select>
+    </p>
+    <form action="/modify_word" method="post" id="mod_word">
+        <p> Spelling : <input type="text" name="spelling" value={{word.spelling}} /> </p>
+        <p> Spelling (IPA) :  <input type="text" name="spelling_ipa" value = {{word.spelling_ipa}} /> </p>
+
+        <p> Syllables :
+            <textarea name="syllables">{{word.syllables[0]}}{% for syll in word.syllables[1:] %}.{{syll}}{% endfor %}</textarea> Séparer les différentes syllabes par des .
+        </p>
+        <p> Syllables (IPA) :
+            <textarea name="syllables_ipa">{{word.syllables_ipa[0]}}{% for syll in word.syllables_ipa[1:] %}.{{syll}}{% endfor %}</textarea> Séparer les différentes syllabes par des .
+        </p>
+
+        <p> <input type="submit" value="Enregistrer" /> </p>
+    </form>
+
+{% if mod %}
+<p type="success"> Modifications enregistrées ! </p>
+{% endif %}
+
+{% endblock %}
+
