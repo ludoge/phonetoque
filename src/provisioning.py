@@ -3,7 +3,7 @@ import logging
 import pyphen
 import requests
 import collections
-
+from src.sound_distance import SoundDistance
 
 class PhonetoqueRequest(object):
     """
@@ -11,13 +11,15 @@ class PhonetoqueRequest(object):
     """
     def __init__(self, config):
         self.language = config['language']
+        self.other_languages = [language for language in config['scraper_languages'] if language != self.language]
         self.hyphenation_dict = pyphen.Pyphen(lang=config['hyphenation_dict'])
         self.ipa_hyphenation_dict = pyphen.Pyphen(lang=config['ipa_hyphenation_dict'])
         self.url = config['server_url']
         self.pronunciations = {}
         self.all_words_route = self.url + "/" + self.language
+        self.all_syllables_route = self.url + "/" + self.language + "_syllables"
         self.all_syllables_ipa = {}
-        self.max_syllables = {}
+        self.sound_distance = SoundDistance()
 
     def prepare_data(self):
         """
@@ -102,11 +104,34 @@ class PhonetoqueRequest(object):
             of a specific language. The values are the orthographical 
             syllabe with maximum occurences for each phonetical syllable.
         """
-        self.max_syllables = self.all_syllables_ipa
-        for ipa_syllable in self.max_syllables:
-            orth_syllables = self.max_syllables[ipa_syllable]
+        max_syllables = self.all_syllables_ipa
+        for ipa_syllable in max_syllables:
+            orth_syllables = max_syllables[ipa_syllable]
             max_orth_syllable = max(orth_syllables, key=orth_syllables.get)
             self.all_syllables_ipa[ipa_syllable] = max_orth_syllable
+    
+    def get_similar_syllables(self):  
+        req = requests.get(self.all_syllables_route)
+        dico = json.loads(req.content)
+        language_syllables = dico['result']
+        for language in self.other_languages:
+            other_language_syllables_routes = self.url + "/" + language + "_syllables/"
+            try:
+                r = requests.get(other_language_syllables_routes)
+            except requests.exceptions.RequestException as e:
+                print("Error with the request:")
+                print(e)
+            dico = json.loads(r.content)
+            other_language_syllables = dico['result']
+            for syllable in language_syllables:
+                score = -1
+                for other_syllable in other_language_syllables:
+                    new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'], other_syllable['ipa_syllable'])
+                    if new_score > score:
+                        payload = {language: other_syllable['ipa_syllable']}
+                        score = new_score
+                response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+                print(syllable['ipa_syllable'], payload, score)
 
     def post_syllable_to_db(self, ipa_syllable):
         """
@@ -114,7 +139,7 @@ class PhonetoqueRequest(object):
         Args:
             ipa_syllable (str): the phonetical writing of the syllable
         """
-        orthographical_syllable = self.max_syllables[ipa_syllable]
+        orthographical_syllable = self.all_syllables_ipa[ipa_syllable]
         preceding_syllable = "" #to do: similar to get_max_syllables()
         following_sylable = "" #to do: similar to get_max_syllables()
         payload = {
