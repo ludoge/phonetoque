@@ -114,7 +114,7 @@ def translitterate():
                 syllables_ipa2 += [syll1]
                 syll2 = coll_syll_2.find_one({'ipa_syllable':syll1})['orthographical_syllable'] #orthographique dans la langue 2
                 syllables += [syll2]
-            except KeyError:
+            except (KeyError, TypeError):
                 syllables_ipa2 += ["~"]
                 syllables += ["~"]
         return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2)

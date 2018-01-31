@@ -1,7 +1,7 @@
 properties:
-  nasal: 3
+  nasal: 5
   stop: 3
-  sibilant: 3
+  sibilant: 5
   fricative: 3
   approximant: 3
   flap: 3
@@ -22,9 +22,9 @@ properties:
   pharyngeal: 5
   epiglottal: 5
   glottal: 5
-  voiceless: 2
-  voiced: 2
-  r_sound: 4
+  voiceless: 6
+  voiced: 6
+  r_sound: 10
   coarticulated: 5
    
 
