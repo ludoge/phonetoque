@@ -134,7 +134,6 @@ def delete(language,id):
 
 
 def get_collection(language):
-    """""
     # on se place dans la collection correspondant à la langue choisie
     if language == 'english':
         collection = mongo.db.english_words
@@ -145,12 +144,10 @@ def get_collection(language):
     else:
         collection = None
     return collection
-    """
-    return mongo.db.test_valentin
+    #return mongo.db.test_valentin
 
 
 def get_collection_syllables(language):
-    """"
      # on se place dans la collection de syllabes correspondant à la langue choisie
     if language == 'english':
         collection = mongo.db.english_syllables
@@ -161,8 +158,7 @@ def get_collection_syllables(language):
     else:
         collection = None
     return collection
-    """
-    return mongo.db.test_valentin
+    #return mongo.db.test_valentin
 
 
 def get_word(language,word):
