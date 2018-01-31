@@ -67,6 +67,7 @@ class SoundDistance(object):
         :param str:
         :return:
         """
+        str = str.replace(' ','')
         i = len(str)
         if i == 0:
             return []
@@ -137,3 +138,4 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('dɔ', 'ɔd'))
     print(sd.syllable_similarity('ɛləfənt', 'paɪθən'))
     print(sd.syllable_similarity('dɔɡ', 'dɔ'))
+    print(sd.detect_sounds('ɡl ̥'))
