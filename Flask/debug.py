@@ -37,7 +37,7 @@ def modify(language=None,id=None):
         # on met en forme
         insert['syllables'] = insert['syllables'].split('.')
         insert['syllables_ipa']=insert['syllables_ipa'].split('.')
-        # on se place dans la bonne collection puis on insère
+        # on se place dans la bonne collection puis on remplace le mot
         collection = get_collection(insert['language'])
         delete_id(insert['language'],insert['id'])
         collection.insert(insert)
@@ -74,7 +74,6 @@ def new_word():
 def all_words(language=None,spelling=None):
     if request.method == "POST":
         url = "/all_words/"+request.form['language']+"/"+request.form['spelling']
-        print(url)
         return redirect(url)
     collection = get_collection(language).find()
     words = []
@@ -95,7 +94,7 @@ def translitterate():
         language1 = request.form['language1']
         language2 = request.form['language2']
         if language1 == language2:
-            return render_template('error.html',message='Entrez deux langages différents pour la translittération !')
+            return render_template('translitteration.html',post=False,message='Entrez deux langages différents pour la translittération !')
             # on se place dans les bonnes collections
         coll_word_1 = get_collection(language1)
         coll_syll_1 = get_collection_syllables(language1)
@@ -103,7 +102,7 @@ def translitterate():
             # on récupère la prononciation du mot
         word = coll_word_1.find_one({'spelling':spelling})
         if word is None:
-            return render_template('error.html', message="Ce mot n'est pas répertorié !")
+            return render_template('translitteration.html',post=False, message="Ce mot n'est pas répertorié !")
         syllables_ipa1 = word['syllables_ipa']
 
         syllables = []
