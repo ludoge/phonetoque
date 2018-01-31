@@ -169,4 +169,4 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('dɔɡ', 'ɡɔd'))
     print(sd.syllable_similarity('bəʊn', 'bon'))
     print(sd.syllable_similarity('bəʊn', 'bəʊt'))
-    print(sd.syllable_similarity('aʊ', 'aa'))
+    print(sd.syllable_similarity('poət', 'pʁɛt'))
