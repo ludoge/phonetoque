@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 import json
 from json import *
 import jinja2
+from bson import ObjectId
 
 app = Flask(__name__)
 
@@ -21,21 +22,14 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/database', methods=['GET', 'POST'])
+@app.route('/database', methods=['GET'])
 def database():
-    if request.method == 'POST':
-        try:
-            result = get_word(request.form['language'],request.form['word'])
-            JSON = json.dumps(result)
-            word = loads(JSON)
-            return render_template('word.html', word=word, mod=False)
-        except jinja2.exceptions.UndefinedError:
-            render_template('error.html',message="Ce mot n'existe pas dans la base")
     return render_template('database.html')
 
 
-@app.route('/modify_word', methods=['GET', 'POST'])
-def modify():
+@app.route('/modify_word/',methods=['POST'])
+@app.route('/modify_word/<language>/<id>/', methods=['GET'])
+def modify(language=None,id=None):
     if request.method == 'POST':
         # on récupère les champs entrées dans word.html
         item = json.dumps(request.form)
@@ -45,15 +39,24 @@ def modify():
         insert['syllables_ipa']=insert['syllables_ipa'].split('.')
         # on se place dans la bonne collection puis on insère
         collection = get_collection(insert['language'])
+        delete_id(insert['language'],insert['id'])
         collection.insert(insert)
-        return render_template('word.html',word=insert,mod=True)
+        url = '/all_words/'+insert['language']+'/'+insert['spelling']
+        return redirect(url)
     else:
-        return render_template('error.html',message="Impossible d'accéder à cette page"), 404
+        collection = get_collection(language)
+        word = collection.find_one({'_id':ObjectId(id)})
+        word['id'] = str(word['_id'])
+        return render_template('word.html',word=word,mod=False)
 
 
-@app.route('/add_word', methods=['GET', 'POST'])
+@app.route('/add_word/', methods=['GET', 'POST'])
 def new_word():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        default = {'language':'english', 'spelling':'', 'spelling_ipa':'', 'syllables':[], 'syllables_ipa':[] }
+        return render_template('word.html',word=default,mod=False)
+    else:
+        # on récupère les champs entrées dans word.html
         item = json.dumps(request.form)
         insert = loads(item)
         # on met en forme
@@ -62,10 +65,8 @@ def new_word():
         # on se place dans la bonne collection puis on insère
         collection = get_collection(insert['language'])
         collection.insert(insert)
+        insert['id'] = str(collection.find_one(insert)['_id'])
         return render_template('word.html', word=insert, mod=True)
-    else:
-        default = {'language':'english', 'spelling':'', 'spelling_ipa':'', 'syllables':[], 'syllables_ipa':[] }
-        return render_template('word.html',word=default,mod=False)
 
 
 @app.route('/all_words/',methods=['POST'])
@@ -79,6 +80,7 @@ def all_words(language=None,spelling=None):
     words = []
     for word in collection:
         if word['spelling'] == spelling:
+            word['id'] = str(word['_id'])
             words += [word]
     return render_template('all_words.html',all_words=words)
 
@@ -107,20 +109,31 @@ def translitterate():
         syllables = []
         syllables_ipa2 = []
         for syll in syllables_ipa1:
-            # on cherche la correspondance de chaque syllabe dans la 2eme langue
-            syll1 = coll_syll_1.find_one({'spelling_ipa':syll})[language2] #phonetique dans la langue 2
-            syllables_ipa2 += [syll1]
-            syll2 = coll_syll_2.find_one({'spelling_ipa':syll1, 'language':language2})['spelling'] #orthographique dans la langue 2
-            syllables += [syll2]
-
+            try:
+                # on cherche la correspondance de chaque syllabe dans la 2eme langue
+                syll1 = coll_syll_1.find_one({'ipa_syllable':syll})[language2] #phonetique dans la langue 2
+                syllables_ipa2 += [syll1]
+                syll2 = coll_syll_2.find_one({'ipa_syllable':syll1, 'language':language2})['orthographical_syllable'] #orthographique dans la langue 2
+                syllables += [syll2]
+            except Exception:
+                syllables_ipa2 += ["~"]
+                syllables += ["~"]
         return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2)
+
+
+@app.route('/delete/<language>/<id>/')
+def delete(language,id):
+    collection = get_collection(language)
+    word = collection.find_one({"_id": ObjectId(id)})["spelling"]
+    delete_id(language,id)
+    url = '/all_words/' + language + '/' + word
+    return redirect(url)
 
 
 # ------------------ Fonctions générales ------------------------ #
 
 
 def get_collection(language):
-
     # on se place dans la collection correspondant à la langue choisie
     if language == 'english':
         collection = mongo.db.english_words
@@ -131,12 +144,10 @@ def get_collection(language):
     else:
         collection = None
     return collection
-
     #return mongo.db.test_valentin
 
 
 def get_collection_syllables(language):
-    """"
      # on se place dans la collection de syllabes correspondant à la langue choisie
     if language == 'english':
         collection = mongo.db.english_syllables
@@ -147,8 +158,7 @@ def get_collection_syllables(language):
     else:
         collection = None
     return collection
-    """
-    return mongo.db.test_valentin
+    #return mongo.db.test_valentin
 
 
 def get_word(language,word):
@@ -162,6 +172,7 @@ def get_word(language,word):
     else:
         result = all_words.find_one({'spelling': word})
         if result:
+            result['id'] = str(result['_id'])
             del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
             output = result
         else:
@@ -169,8 +180,9 @@ def get_word(language,word):
     return output
 
 
-def delete(language,id):
-    return None
+def delete_id(language,id):
+    collection = get_collection(language)
+    collection.delete_one({"_id":ObjectId(id)})
 
 
 if __name__ == '__main__':
