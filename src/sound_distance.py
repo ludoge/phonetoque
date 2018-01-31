@@ -133,8 +133,11 @@ class SoundDistance(object):
             weights = 0
             for i in range(len(clusters1)):
                 w = 1
-                if clusters1[i][0] in self.all_consonants:
-                    w = 2
+                try:
+                    if clusters1[i][0] in self.all_consonants:
+                        w = 2
+                except:
+                    pass
                 weights += w
                 res += self._aux_cluster_similarity(clusters1[i], clusters2[i])*w
             res /= weights
@@ -173,4 +176,5 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('bəʊn', 'bon'))
     print(sd.syllable_similarity('bəʊn', 'bəʊt'))
     print(sd.syllable_similarity('ʃən', 'ʃɛl'))
-    print(sd.syllable_similarity('ʃən', 'səl'))
+    print(sd.syllable_similarity('fɛt', 'fənt'))
+    print(sd.syllable_similarity('fənt', 'fant'))
