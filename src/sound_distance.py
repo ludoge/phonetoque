@@ -82,10 +82,9 @@ class SoundDistance(object):
             res += self.data[s1][property]*self.data[s2][property]
         return res
 
-    def syllable_similarity(self, s1, s2):
+    def _aux_syllable_similarity(self, sounds1, sounds2):
         res = 0
         weights = 0
-        sounds1, sounds2 = self.detect_sounds(s1), self.detect_sounds(s2)
         if len(sounds1) == len(sounds2):
             for i in range(len(sounds1)):
                 s = self.sound_similarity(sounds1[i], sounds2[i])
@@ -93,7 +92,16 @@ class SoundDistance(object):
                 weights += 1
             if weights > 0:
                 res /= weights
-        return res
+            return res
+        elif len(sounds1) >= len(sounds2):
+            return (max(self._aux_syllable_similarity(sounds1[1:], sounds2), self._aux_syllable_similarity(sounds1[:-1],
+            sounds2)) + 0.2)*0.95*(1-1/(len(sounds1)+1)) - 0.2
+        elif len(sounds1) < len(sounds2):
+            return self._aux_syllable_similarity(sounds2, sounds1)
+
+    def syllable_similarity(self, s1, s2):
+        sounds1, sounds2 = self.detect_sounds(s1), self.detect_sounds(s2)
+        return round(self._aux_syllable_similarity(sounds1, sounds2), 6)
 
 
 if __name__ == '__main__':
@@ -120,3 +128,12 @@ if __name__ == '__main__':
 
     print(sd.syllable_similarity('kæt', 'dʌk'))
     print(sd.syllable_similarity('dɔɡ', 'dʌk'))
+    print(sd.syllable_similarity('dɔɡ', 'dʌ'))
+    print(sd.syllable_similarity('dɔɡ', 'd'))
+    print(sd.syllable_similarity('dɔɡ', 'dɔɡz'))
+    print(sd.syllable_similarity('dɔɡz', 'dɔɡzz'))
+    print(sd.syllable_similarity('dɔz', 'ftɔzz'))
+    print(sd.syllable_similarity('dɔɡ', 'ɡɔd'))
+    print(sd.syllable_similarity('dɔ', 'ɔd'))
+    print(sd.syllable_similarity('ɛləfənt', 'paɪθən'))
+    print(sd.syllable_similarity('dɔɡ', 'dɔ'))
