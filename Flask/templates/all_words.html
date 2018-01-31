@@ -12,10 +12,14 @@
         </h1>
     {% for word in all_words %}
     <p>
-        {{word._id}}
+        {{word.id}}
         {{word.spelling_ipa}}
         {{word.syllables}}
         {{word.syllables_ipa}}
+        {% set url1 = '/modify_word/'+word.language+'/'+word.id %}
+        <a type="button" href="{{url1}}"> Modifier </a>
+        {% set url2 = '/delete/'+word.language+'/'+word.id %}
+        <a type="button" href="{{url2}}"> Supprimer </a>
     </p>
     {% endfor %}
 
