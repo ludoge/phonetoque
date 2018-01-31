@@ -76,6 +76,7 @@ class SoundDistance(object):
                 return [str[:i]] + self.detect_sounds(str[i:])
             else:
                 i -= 1
+        return self.detect_sounds(str[1:])
 
     def sound_similarity(self, s1, s2):
         res = 0
@@ -138,4 +139,4 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('dɔ', 'ɔd'))
     print(sd.syllable_similarity('ɛləfənt', 'paɪθən'))
     print(sd.syllable_similarity('dɔɡ', 'dɔ'))
-    print(sd.detect_sounds('ɡl ̥'))
+    print(sd.detect_sounds('777ɡ7444l̥77'))
