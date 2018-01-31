@@ -33,6 +33,11 @@ header{
     height:200px;
 }
 
+td /* Toutes les cellules des tableaux... */
+{
+    border: 2px ; /* auront une bordure de 1px */
+}
+
 /*id*/
 
 #main {
