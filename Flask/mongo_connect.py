@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
 app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
+app.config['JSON_AS_ASCII'] = False
 
 mongo = PyMongo(app)
 
