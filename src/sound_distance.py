@@ -84,7 +84,10 @@ class SoundDistance(object):
     def sound_similarity(self, s1, s2):
         res = 0
         for property in self.all_properties:
-            res += self.data[s1][property]*self.data[s2][property]
+            try:
+                res += self.data[s1][property]*self.data[s2][property]
+            except:
+                return 0
         return res
 
     def cluster_consonant_vowel(self, sounds):
@@ -177,4 +180,4 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('bəʊn', 'bəʊt'))
     print(sd.syllable_similarity('ʃən', 'ʃɛl'))
     print(sd.syllable_similarity('fɛt', 'fənt'))
-    print(sd.syllable_similarity('fənt', 'fant'))
+    print(sd.syllable_similarity('tɪdʒ', 'tiʒ'))
