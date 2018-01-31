@@ -23,6 +23,10 @@
     </form>
 </div>
 
+    {% if message != "" %}
+    <p align="center"> {{message}} </p>
+    {% endif %}
+
     {% if post %}
     <div align="center" class="top-buffer">
         <p style="font-size:40px;">  {{syllables[0]}}{% for syll in syllables[1:] %} · {{syll}}{% endfor %} </p>
