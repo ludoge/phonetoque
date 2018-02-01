@@ -59,6 +59,7 @@ def add_word(language):
 
 @app.route('/<language>_syllables/', defaults={'ipa_syllable': ''}, methods = ['GET']) #pour avoir toutes les syllabes dans une langue
 @app.route('/<language>_syllables/<path:ipa_syllable>', methods=['GET']) #pour avoir des details sur une syllabe
+@app.route('/<language>_syllables/<path:ipa_syllable>', methods=['PATCH']) #pour rajouter des attributs en plus sur une syllabe
 def get_all_syllables(language, ipa_syllable):
     # on va selectionner la table selon la langue choisie
     if language == 'english':
@@ -67,22 +68,29 @@ def get_all_syllables(language, ipa_syllable):
         all_syllables = mongo.db.french_syllables
     elif language == 'italian':
         all_syllables = mongo.db.italian_syllables
-
-    if ipa_syllable == "":
-        output = []
-        result = all_syllables.find()
-        for syllable in result:
-            del syllable['_id'] #the value of this key is an ObjectId which is not JSON serializable
-            output.append(syllable)
-        return jsonify({'result': output})
-    else:
-        result = all_syllables.find_one({'ipa_syllable' : ipa_syllable})
-        if result:
-            del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
-            output = result
+    if request.method == "GET":
+        if ipa_syllable == "":
+            output = []
+            result = all_syllables.find()
+            for syllable in result:
+                del syllable['_id'] #the value of this key is an ObjectId which is not JSON serializable
+                output.append(syllable)
+            return jsonify({'result': output})
         else:
-            output = 'This syllable is not in our database'
-        return jsonify({'result': output})
+            result = all_syllables.find_one({'ipa_syllable' : ipa_syllable})
+            if result:
+                del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
+                output = result
+            else:
+                output = 'This syllable is not in our database'
+            return jsonify({'result': output})
+    elif request.method == "PATCH":
+        data = request.get_json()
+        print(data)
+        all_syllables.update_one({"ipa_syllable": ipa_syllable}, {'$set': data})
+        return "A new attribute {} has been added to the syllable {}".format(data, ipa_syllable)
+
+
 
 @app.route('/<language>_syllables/', methods=['POST'])
 def add_syllables(language):
