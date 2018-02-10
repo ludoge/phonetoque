@@ -118,19 +118,23 @@ class PhonetoqueRequest(object):
             other_language_syllables_routes = self.url + "/" + language + "_syllables/"
             try:
                 r = requests.get(other_language_syllables_routes)
+                dico = json.loads(r.content)
+                other_language_syllables = dico['result']
             except requests.exceptions.RequestException as e:
                 print("Error with the request:")
                 print(e)
-            dico = json.loads(r.content)
-            other_language_syllables = dico['result']
+                other_language_syllables = []
             for syllable in language_syllables:
-                score = -1
+                score = 0
+                payload = {}
                 for other_syllable in other_language_syllables:
                     new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'], other_syllable['ipa_syllable'])
-                    if new_score > score:
+                    #print(new_score)
+                    if new_score > score and new_score > 0:
                         payload = {language: other_syllable['ipa_syllable']}
                         score = new_score
-                response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+                if score > 0:
+                    response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
                 print(syllable['ipa_syllable'], payload, score)
 
     def post_syllable_to_db(self, ipa_syllable):
