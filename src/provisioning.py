@@ -26,8 +26,8 @@ class PhonetoqueRequest(object):
         Syllabifies words and pronunciations
         :return:
         """
-        self.pronunciations = {self.hyphenation_dict.inserted("  "+k+"  ").strip():
-                                   [self.ipa_hyphenation_dict.inserted("  "+x+"  ").strip() for x in v]
+        self.pronunciations = {self.hyphenation_dict.inserted(k).strip():
+                                   [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
                                for k, v in self.pronunciations.items()}
 
     def post_word_to_db(self, word):
