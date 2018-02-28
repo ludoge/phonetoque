@@ -138,11 +138,11 @@ class PhonetoqueRequest(object):
                     new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'], other_syllable['ipa_syllable'])
                     #print(new_score)
                     if new_score > score and new_score > 0:
-                        payload = {language: other_syllable['ipa_syllable']}
-                        score = new_score
+                        score = round(new_score, 3)
+                        payload = {language: other_syllable['ipa_syllable'], f"{language}_score": score}
                 if score > 0:
                     response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
-                print(syllable['ipa_syllable'], payload, score)
+                print(syllable['ipa_syllable'], payload)
 
     def post_syllable_to_db(self, ipa_syllable):
         """

@@ -31,6 +31,7 @@ if __name__ == '__main__':
 
     request = pr.PhonetoqueRequest(config)
  
+ 
     request.pronunciations = clean_data
     # request.prepare_data()
 
@@ -41,4 +42,4 @@ if __name__ == '__main__':
     request.get_max_syllables()
     print("got max syllables")
     request.get_similar_syllables()
-    # request.post_all_syllables()"""
+    # request.post_all_syllables()
