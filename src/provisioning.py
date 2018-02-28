@@ -30,7 +30,7 @@ class PhonetoqueRequest(object):
                                    [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
                                for k, v in self.pronunciations.items()}
 
-    def get_syllabification(self, word):
+    def get_ipa_syllabification(self, word):
         """
     
         """

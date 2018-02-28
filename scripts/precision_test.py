@@ -37,9 +37,10 @@ if __name__ == '__main__':
             false = 0
             random_sample = rd.sample(word_list, 1500)
             for word in random_sample:
-                cleaned = word.replace('-', '').replace('10', '')
-                to_validate = request.get_syllabification(cleaned)
-                if word == to_validate:
+                cleaned = word.replace('10', '')
+                unified_word = cleaned.replace('-', '')
+                to_validate = request.get_ipa_syllabification(unified_word)
+                if cleaned == to_validate:
                     true += 1
                 else:
                     false +=1
