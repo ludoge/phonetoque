@@ -2,12 +2,15 @@
 
 from flask import Flask, request, jsonify, make_response, render_template, Response, redirect
 from flask_pymongo import PyMongo
+import requests
 import json
 from json import *
 import jinja2
 from bson import ObjectId
 
 app = Flask(__name__)
+
+API_URL = 'http://127.0.0.1:5001'
 
 app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
 app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
@@ -39,16 +42,14 @@ def modify(language=None,id=None):
         # on met en forme
         insert['syllables'] = insert['syllables'].split('.')
         insert['syllables_ipa']=insert['syllables_ipa'].split('.')
-        # on se place dans la bonne collection puis on remplace le mot
-        collection = get_collection(insert['language'])
-        delete_id(insert['language'],insert['id'])
-        collection.insert(insert)
+        # on PATCH
+        language = insert['language']
+        word = insert['spelling']
+        requests.patch(f"{API_URL}/{language}/{word}", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
         url = '/all_words/'+insert['language']+'/'+insert['spelling']
         return redirect(url)
     else:
-        collection = get_collection(language)
-        word = collection.find_one({'_id':ObjectId(id)})
-        word['id'] = str(word['_id'])
+        word = requests.get(f"{API_URL}/{language}_id/{str(id)}").json()['result']
         return render_template('word.html',word=word,mod=False)
 
 
@@ -64,10 +65,10 @@ def new_word():
         # on met en forme
         insert['syllables'] = insert['syllables'].split('.')
         insert['syllables_ipa'] = insert['syllables_ipa'].split('.')
-        # on se place dans la bonne collection puis on insère
-        collection = get_collection(insert['language'])
-        collection.insert(insert)
-        insert['id'] = str(collection.find_one(insert)['_id'])
+        # on POST
+        language=insert['language']
+        requests.post(f"{API_URL}/{language}_words/", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
+        #insert['id'] = str(collection.find_one(insert)['_id'])
         return render_template('word.html', word=insert, mod=True)
 
 
@@ -79,10 +80,15 @@ def all_words(language=None,spelling=None):
         return redirect(url)
     collection = get_collection(language).find()
     words = []
-    for word in collection:
-        if word['spelling'] == spelling:
-            word['id'] = str(word['_id'])
-            words += [word]
+    #for word in collection:
+    #    if word['spelling'] == spelling:
+    #        word['id'] = str(word['_id'])
+    #        words += [word]
+    words = requests.get(f"{API_URL}/{language}/{spelling}").json()['result']
+    for word in words:
+        word['_id'] = word['_id']['$oid']
+    if not words:
+        words = []
     return render_template('all_words.html',all_words=words)
 
 
@@ -102,7 +108,8 @@ def translitterate():
         coll_syll_1 = get_collection_syllables(language1)
         coll_syll_2 = get_collection_syllables(language2)
             # on récupère la prononciation du mot
-        word = coll_word_1.find_one({'spelling':spelling})
+        #word = coll_word_1.find_one({'spelling':spelling})
+        word = requests.get(f'{API_URL}/{language1}/{spelling}').json()['result'][0]
         if word is None:
             return render_template('translitteration.html',post=False, message=u"Ce mot n'est pas répertorié !")
         syllables_ipa1 = word['syllables_ipa']
@@ -112,9 +119,12 @@ def translitterate():
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
-                syll1 = coll_syll_1.find_one({'ipa_syllable':syll})[language2] #phonetique dans la langue 2
+                #syll1 = coll_syll_1.find_one({'ipa_syllable':syll})[language2] #phonetique dans la langue 2
+                syll1 = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result'][language2]
                 syllables_ipa2 += [syll1]
-                syll2 = coll_syll_2.find_one({'ipa_syllable':syll1})['orthographical_syllable'] #orthographique dans la langue 2
+                #syll2 = coll_syll_2.find_one({'ipa_syllable':syll1})['orthographical_syllable'] #orthographique dans la langue 2
+                syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
+
                 syllables += [syll2]
             except (KeyError, TypeError):
                 syllables_ipa2 += ["~"]
@@ -123,10 +133,12 @@ def translitterate():
 
 
 @app.route('/delete/<language>/<id>/')
-def delete(language,id):
-    collection = get_collection(language)
-    word = collection.find_one({"_id": ObjectId(id)})["spelling"]
+def delete(language, id):
+    #collection = get_collection(language)
+    #word = collection.find_one({"_id": ObjectId(id)})["spelling"]
+    word = requests.get(f"{API_URL}/{language}_id/{id}").json()['result']['spelling']
     delete_id(language,id)
+    delete = requests.delete(f"{API_URL}/{language}/{id}")
     url = '/all_words/' + language + '/' + word
     return redirect(url)
 
@@ -163,6 +175,8 @@ def get_collection_syllables(language):
 
 
 def get_word(language,word):
+    res = requests.get(f"{API_URL}/{language}/{word}")
+    return res
     # on va selectioner la table selon la langue choisie
     all_words = get_collection(language)
     if word == "":
@@ -187,5 +201,6 @@ def delete_id(language,id):
 
 
 if __name__ == '__main__':
+    #print(get_word('french','test'))
     app.run(debug=True, host='0.0.0.0')
     #app.run(debug=True, port=5000)

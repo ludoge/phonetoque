@@ -31,6 +31,19 @@ def get_by_id(language, id):
         output = result
     return dumps({'result': output})
 
+@app.route('/<language>_id/<id>', methods= ['DELETE'])
+def del_by_id(language, id):
+    all_words = None
+    language = language.split()[0]
+    if language == 'english':
+        all_words = mongo.db.english_words
+    elif language == 'french':
+        all_words = mongo.db.french_words
+    elif language == 'italian':
+        all_words = mongo.db.italian_words
+    result = all_words.find_one({'_id': ObjectId(id)})
+    all_words.delete_one({"_id":ObjectId(id)})
+    return f"Object {id} deleted"
 
 @app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
 @app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
@@ -50,18 +63,18 @@ def get_all_words(language, word):
         for word in all_words.find():
             del word['_id'] #the value of this key is an ObjectId which is not JSON serializable
             output.append(word)
-        return jsonify({'result': output})
+        return dumps({'result': output})
     elif request.method != "PATCH":
-        result = all_words.find_one({'spelling' : word})
+        result = all_words.find({'spelling' : word})#, {'_id': False})
         if result:
-            del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
+            #del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
             output = result
         else:
             output = 'This word is not in our database'
-        return jsonify({'result': output})
+        return dumps({'result': output})
     elif request.method == "PATCH":
         data = request.get_json()
-        all_words.update_one({"spelling": word}, {'$set': data})
+        all_words.update({"spelling": word}, {'$set': data})
         return "A new attribute {} has been added to the syllable {}".format(data, word)
 
 @app.route('/<language>_words/', methods=['POST'])
@@ -122,6 +135,21 @@ def get_all_syllables(language, ipa_syllable):
         all_syllables.update_one({"ipa_syllable": ipa_syllable}, {'$set': data})
         return "A new attribute {} has been added to the syllable {}".format(data, ipa_syllable)
 
+@app.route('/<language>_syllables/<syllable>/orthographic', methods=['GET'])
+def get_syllable_orthographic(language, syllable):
+    if language == 'english':
+        all_syllables = mongo.db.english_syllables
+    elif language == 'french':
+        all_syllables = mongo.db.french_syllables
+    elif language == 'italian':
+        all_syllables = mongo.db.italian_syllables
+    result = all_syllables.find_one({'orthographical_syllable': syllable})
+    if result:
+        del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
+        output = result
+    else:
+        output = 'This syllable is not in our database'
+    return jsonify({'result': output})
 
 
 @app.route('/<language>_syllables/', methods=['POST'])
