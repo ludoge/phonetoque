@@ -30,6 +30,13 @@ class PhonetoqueRequest(object):
                                    [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
                                for k, v in self.pronunciations.items()}
 
+    def get_syllabification(self, word):
+        """
+    
+        """
+        syllabed_word = self.ipa_hyphenation_dict.inserted(word)
+        return syllabed_word
+
     def post_word_to_db(self, word):
         spelling = word.replace("-", "").lower()
         syllables = [x for x in word.split("-") if x != '']
