@@ -1,23 +1,15 @@
 ﻿# coding: utf-8
 
-from flask import Flask, request, jsonify, make_response, render_template, Response, redirect
-from flask_pymongo import PyMongo
+from flask import Flask, request, render_template, redirect
 import requests
 import json
 from json import *
-import jinja2
-from bson import ObjectId
 
 app = Flask(__name__)
 
 API_URL = 'http://127.0.0.1:5001'
 
-app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
-app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
 app.config['JSON_AS_ASCII'] = False
-
-mongo = PyMongo(app)
-
 
 # ------------------ Routes Debug ------------------------ #
 
@@ -68,7 +60,6 @@ def new_word():
         # on POST
         language=insert['language']
         requests.post(f"{API_URL}/{language}_words/", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
-        #insert['id'] = str(collection.find_one(insert)['_id'])
         return render_template('word.html', word=insert, mod=True)
 
 
@@ -78,12 +69,6 @@ def all_words(language=None,spelling=None):
     if request.method == "POST":
         url = "/all_words/"+request.form['language']+"/"+request.form['spelling']
         return redirect(url)
-    collection = get_collection(language).find()
-    words = []
-    #for word in collection:
-    #    if word['spelling'] == spelling:
-    #        word['id'] = str(word['_id'])
-    #        words += [word]
     words = requests.get(f"{API_URL}/{language}/{spelling}").json()['result']
     for word in words:
         word['_id'] = word['_id']['$oid']
@@ -103,12 +88,7 @@ def translitterate():
         language2 = request.form['language2']
         if language1 == language2:
             return render_template('translitteration.html',post=False,message=u'Entrez deux langages différents pour la translittération !')
-            # on se place dans les bonnes collections
-        coll_word_1 = get_collection(language1)
-        coll_syll_1 = get_collection_syllables(language1)
-        coll_syll_2 = get_collection_syllables(language2)
             # on récupère la prononciation du mot
-        #word = coll_word_1.find_one({'spelling':spelling})
         word = requests.get(f'{API_URL}/{language1}/{spelling}').json()['result'][0]
         if word is None:
             return render_template('translitteration.html',post=False, message=u"Ce mot n'est pas répertorié !")
@@ -119,10 +99,8 @@ def translitterate():
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
-                #syll1 = coll_syll_1.find_one({'ipa_syllable':syll})[language2] #phonetique dans la langue 2
                 syll1 = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result'][language2]
                 syllables_ipa2 += [syll1]
-                #syll2 = coll_syll_2.find_one({'ipa_syllable':syll1})['orthographical_syllable'] #orthographique dans la langue 2
                 syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
 
                 syllables += [syll2]
@@ -134,71 +112,10 @@ def translitterate():
 
 @app.route('/delete/<language>/<id>/')
 def delete(language, id):
-    #collection = get_collection(language)
-    #word = collection.find_one({"_id": ObjectId(id)})["spelling"]
     word = requests.get(f"{API_URL}/{language}_id/{id}").json()['result']['spelling']
-    delete_id(language,id)
-    delete = requests.delete(f"{API_URL}/{language}/{id}")
+    delete = requests.delete(f"{API_URL}/{language}_id/{id}")
     url = '/all_words/' + language + '/' + word
     return redirect(url)
-
-
-# ------------------ Fonctions générales ------------------------ #
-
-
-def get_collection(language):
-    # on se place dans la collection correspondant à la langue choisie
-    if language == 'english':
-        collection = mongo.db.english_words
-    elif language == 'french':
-        collection = mongo.db.french_words
-    elif language == 'italian':
-        collection = mongo.db.italian_words
-    else:
-        collection = None
-    return collection
-    #return mongo.db.test_valentin
-
-
-def get_collection_syllables(language):
-     # on se place dans la collection de syllabes correspondant à la langue choisie
-    if language == 'english':
-        collection = mongo.db.english_syllables
-    elif language == 'french':
-        collection = mongo.db.french_syllables
-    elif language == 'italian':
-        collection = mongo.db.italian_syllables
-    else:
-        collection = None
-    return collection
-    #return mongo.db.test_valentin
-
-
-def get_word(language,word):
-    res = requests.get(f"{API_URL}/{language}/{word}")
-    return res
-    # on va selectioner la table selon la langue choisie
-    all_words = get_collection(language)
-    if word == "":
-        output = []
-        for word in all_words.find():
-            del word['_id']  # the value of this key is an ObjectId which is not JSON serializable
-            output.append(word)
-    else:
-        result = all_words.find_one({'spelling': word})
-        if result:
-            result['id'] = str(result['_id'])
-            del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
-            output = result
-        else:
-            output = 'This word is not in our database'
-    return output
-
-
-def delete_id(language,id):
-    collection = get_collection(language)
-    collection.delete_one({"_id":ObjectId(id)})
-
 
 if __name__ == '__main__':
     #print(get_word('french','test'))

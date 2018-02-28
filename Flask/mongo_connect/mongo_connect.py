@@ -41,8 +41,9 @@ def del_by_id(language, id):
         all_words = mongo.db.french_words
     elif language == 'italian':
         all_words = mongo.db.italian_words
-    result = all_words.find_one({'_id': ObjectId(id)})
+    #result = all_words.find_one({'_id': ObjectId(id)})
     all_words.delete_one({"_id":ObjectId(id)})
+    all_words.delete_one({"_id": id})
     return f"Object {id} deleted"
 
 @app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
@@ -178,5 +179,5 @@ def add_syllables(language):
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5001)
-    #app.run(debug=True, host='0.0.0.0')
+    #app.run(debug=True, host='127.0.0.1', port=5001)
+    app.run(debug=True, host='0.0.0.0')
