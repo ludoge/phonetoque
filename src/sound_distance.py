@@ -1,9 +1,12 @@
-from math import sqrt
+from math import sqrt, pow
 import yaml
 
-###### TODO increase importance of consonants
+###### TODO increase importance of consonants DONE
 ###### TODO try harmonic mean
-###### TODO increase importance of voicing
+###### TODO increase importance of voicing DONE
+###### TODO deal with drug -> dog problem
+###### TODO deal with 'h' absurdity somewhat done
+###### TODO "nuelel" and "rabola"
 
 class SoundDistance(object):
     """
@@ -108,6 +111,7 @@ class SoundDistance(object):
     def _aux_cluster_similarity(self, sounds1, sounds2):
         res = 0
         weights = 0
+        d = 0.15
         if len(sounds1) == len(sounds2):
             for i in range(len(sounds1)):
                 # Hacky way of giving more weight to consonants
@@ -121,19 +125,38 @@ class SoundDistance(object):
                 res /= weights
             return res
         elif len(sounds1) >= len(sounds2):
-            return (max(self._aux_cluster_similarity(sounds1[1:], sounds2), self._aux_cluster_similarity(sounds1[:-1],
-            sounds2)) + 0)*0.95*(1-0/(len(sounds1)+2)) - 0
+            similarities = [self._aux_cluster_similarity(sounds1[:i]+sounds1[i+1:], sounds2) for i in range(len(sounds1)-1)]
+            if similarities:
+                return (max(similarities) + d)*0.92*(1-0/(len(sounds1)+1)) - d
+            else:
+                return 0
         elif len(sounds1) < len(sounds2):
             return self._aux_cluster_similarity(sounds2, sounds1)
+
+    def M(self, results, weights, p=1):
+        W = sum(weights)
+        w = [x/W for x in weights]
+        try:
+            return pow(sum(w[i]*pow(results[i],p) for i in range(len(results))),1/p)
+        except ZeroDivisionError:
+            return 0
 
     def syllable_similarity(self, s1, s2):
         sounds1, sounds2 = self.detect_sounds(s1), self.detect_sounds(s2)
         clusters1, clusters2 = self.cluster_consonant_vowel(sounds1), self.cluster_consonant_vowel(sounds2)
+        res = 0
+        adjustment = 1
+        if len(clusters1) == len(clusters2) - 1:
+            clusters1 = ['h'] + clusters1
+            adjustment *= 0.85
+        if len(clusters2) == len(clusters1) - 1:
+            clusters2 = ['h'] + clusters2
+            adjustment *= 0.85
         if len(clusters1) != len(clusters2) or len(clusters1) == 0:
             return 0
         else:
-            res = 0
-            weights = 0
+            results = []
+            weights = []
             for i in range(len(clusters1)):
                 w = 1
                 try:
@@ -141,9 +164,10 @@ class SoundDistance(object):
                         w = 2
                 except:
                     pass
-                weights += w
-                res += self._aux_cluster_similarity(clusters1[i], clusters2[i])*w
-            res /= weights
+                weights.append(w)
+                results.append(w*self._aux_cluster_similarity(clusters1[i], clusters2[i]))
+            #results = [1/x for x in results]
+            res = adjustment*sum(results)/sum(weights)
             return res
 
 
@@ -180,4 +204,13 @@ if __name__ == '__main__':
     print(sd.syllable_similarity('bəʊn', 'bəʊt'))
     print(sd.syllable_similarity('ʃən', 'ʃɛl'))
     print(sd.syllable_similarity('fɛt', 'fənt'))
-    print(sd.syllable_similarity('tɪdʒ', 'tiʒ'))
+    print(sd.syllable_similarity('t', 'nt'))
+    #print(sd.syllable_similarity('ʁɛst', 'ɹest'))
+    print(sd.syllable_similarity('dʒɹʌɡ', 'dɔɡ'))
+    print(sd.syllable_similarity('dʒɹʌɡ', 'dʁɔɡ'))
+    print(sd.syllable_similarity('hot','ot'))
+    #print(sd.syllable_similarity('n', 'p'))
+    #print(sd.syllable_similarity('dʒɹ', 'dʁ'))
+    #print(sd.syllable_similarity('dʒɹ', 'd'))
+    #print(sd.syllable_similarity('dʒ', 'd'))
+    #print(sd.syllable_similarity('leɪt', 'lit'))
