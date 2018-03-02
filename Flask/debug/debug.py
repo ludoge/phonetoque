@@ -7,7 +7,8 @@ from json import *
 
 app = Flask(__name__)
 
-API_URL = 'http://127.0.0.1:5001'
+API_URL = 'http://api:5000'
+#API_URL = 'http://127.0.0.1:5001'
 
 app.config['JSON_AS_ASCII'] = False
 
