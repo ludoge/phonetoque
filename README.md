@@ -13,7 +13,7 @@
 <p>Available scripts are in <em>/scripts</em>. What options are required depend on the script.</p>
 <h1 id="flask">Flask</h1>
 <p>This project also includes a simple Flask API used to communicate with our database (currently an Mlab test instance). To run it:</p>
-<pre><code>python Flask/mongo_connect.py
+<pre><code>docker-compose up
 </code></pre>
 <p>It should run on 127.0.0.1:5000 in debug mode. Make sure this is running whenever you want to run a script that interacts with the database.</p>
 <h1 id="scripts">Scripts</h1>
