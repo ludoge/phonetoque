@@ -4,11 +4,12 @@ from flask import Flask, request, render_template, redirect
 import requests
 import json
 from json import *
+from scipy import stats
 
 app = Flask(__name__)
 
-API_URL = 'http://api:5000'
-#API_URL = 'http://127.0.0.1:5001'
+# API_URL = 'http://api:5000'
+API_URL = 'http://127.0.0.1:5001'
 
 app.config['JSON_AS_ASCII'] = False
 
@@ -97,18 +98,24 @@ def translitterate():
 
         syllables = []
         syllables_ipa2 = []
+        translitteration_score = []
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
-                syll1 = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result'][language2]
+                response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
+                syll1 = response[language2]
+                score = response[f'{language2}_score']
                 syllables_ipa2 += [syll1]
+                translitteration_score += [score]
                 syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
 
                 syllables += [syll2]
             except (KeyError, TypeError):
                 syllables_ipa2 += ["~"]
                 syllables += ["~"]
-        return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2)
+                translitteration_score += [0.001]
+        harmonic_mean = int(100*round(stats.hmean(translitteration_score),2))
+        return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2, harmonic_mean=harmonic_mean)
 
 
 @app.route('/delete/<language>/<id>/')
@@ -120,5 +127,5 @@ def delete(language, id):
 
 if __name__ == '__main__':
     #print(get_word('french','test'))
-    app.run(debug=True, host='0.0.0.0')
-    #app.run(debug=True, port=5000)
+    # app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, port=5000)
