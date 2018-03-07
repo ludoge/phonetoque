@@ -57,11 +57,12 @@ class SoundDistance(object):
             self.data[vowel] = {}
             weights = 0
             for property in self.vowel_properties:
-                self.data[vowel][property] = self.vowel_data[property][vowel]*self.vowel_data['properties'][property]
-                weights += self.data[vowel][property]**2
+                self.data[vowel][property] = self.vowel_data[property][vowel]/self.vowel_data['properties'][property]
+                #weights += self.data[vowel][property]**2
 
             for property in self.vowel_properties:  # normalization
-                self.data[vowel][property] /= sqrt(weights)
+                #  self.data[vowel][property] /= sqrt(weights)
+                pass
 
             for property in self.consonant_properties:
                 self.data[vowel][property] = 0
@@ -86,11 +87,25 @@ class SoundDistance(object):
 
     def sound_similarity(self, s1, s2):
         res = 0
-        for property in self.all_properties:
-            try:
-                res += self.data[s1][property]*self.data[s2][property]
-            except:
-                return 0
+        if s1 in self.all_consonants and s2 in self.all_consonants:
+            # Cos similarity
+            for property in self.consonant_properties:
+                try:
+                    res += self.data[s1][property]*self.data[s2][property]
+                except:
+                    return 0
+            res = (res+1)/2 # between 0 and 1 for compatibility
+        if s1 in self.all_vowels and s2 in self.all_vowels:
+            # Euclidean distance
+            dimensions = 0
+            for property in self.vowel_properties:
+                try:
+                    res += (self.data[s1][property] - self.data[s2][property])**2
+                    dimensions += 1
+                except:
+                    return 0
+            res = 1-res/(2*sqrt(dimensions))
+
         return res
 
     def cluster_consonant_vowel(self, sounds):
@@ -114,11 +129,8 @@ class SoundDistance(object):
         d = 0.15
         if len(sounds1) == len(sounds2):
             for i in range(len(sounds1)):
-                # Hacky way of giving more weight to consonants
                 w = 1
-                if sounds1[i] in self.all_consonants:
-                    w *= 25000
-                s = self.sound_similarity(sounds1[i], sounds2[i])*w
+                s = self.sound_similarity(sounds1[i], sounds2[i])
                 res += s
                 weights += w
             if weights > 0:
@@ -149,7 +161,7 @@ class SoundDistance(object):
         if len(clusters1) == len(clusters2) - 1:
             clusters1 = ['h'] + clusters1
             adjustment *= 0.85
-        if len(clusters2) == len(clusters1) - 1:
+        elif len(clusters2) == len(clusters1) - 1:
             clusters2 = ['h'] + clusters2
             adjustment *= 0.85
         if len(clusters1) != len(clusters2) or len(clusters1) == 0:
@@ -161,13 +173,13 @@ class SoundDistance(object):
                 w = 1
                 try:
                     if clusters1[i][0] in self.all_consonants:
-                        w = 2
+                        w = 1.2
                 except:
                     pass
                 weights.append(w)
-                results.append(w*self._aux_cluster_similarity(clusters1[i], clusters2[i]))
-            #results = [1/x for x in results]
-            res = adjustment*sum(results)/sum(weights)
+                results.append(w*(self._aux_cluster_similarity(clusters1[i], clusters2[i])-1)+1)
+            #res = adjustment*sum(results)/sum(weights)
+            res = adjustment*min(results)*max(results)
             return res
 
 
@@ -214,3 +226,26 @@ if __name__ == '__main__':
     #print(sd.syllable_similarity('dʒɹ', 'd'))
     #print(sd.syllable_similarity('dʒ', 'd'))
     #print(sd.syllable_similarity('leɪt', 'lit'))
+    print(sd.syllable_similarity('ɡœl','ɡəl'))
+    print(sd.syllable_similarity('ɡən','ɡəl'))
+    print(sd.data['p'])
+    print(sd.data['m'])
+    print(sd.syllable_similarity('dʒɹʌɡ', 'dɔɡ'))
+    print(sd.syllable_similarity('dʒɹʌɡ', 'dʁɔɡ'))
+    print(sd.syllable_similarity('dɹɔ','bjɔ'))
+    print(sd.syllable_similarity('dɔɡz', 'dɔɡzz'))
+    print(sd.syllable_similarity('bəʊn', 'bon'))
+    print(sd.syllable_similarity('dɔɡ', 'dʌk'))
+    print(sd.syllable_similarity('tbi', 'beɪ'))
+    print(sd.syllable_similarity('bi', 'beɪ'))
+
+
+
+
+
+
+
+
+
+
+
