@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
+from bson.json_util import dumps
 
 app = Flask(__name__)
 
@@ -9,10 +11,48 @@ app.config['JSON_AS_ASCII'] = False
 
 mongo = PyMongo(app)
 
+@app.route('/', methods = ['GET']) #pour avoir tous les mots dans une langue
+def default_route():
+    return("Welcome to Phonetoque API !")
+
+@app.route('/<language>_id/<id>', methods= ['GET'])
+def get_by_id(language, id):
+    all_words = None
+    language = language.split()[0]
+    if language == 'english':
+        all_words = mongo.db.english_words
+    elif language == 'french':
+        all_words = mongo.db.french_words
+    elif language == 'italian':
+        all_words = mongo.db.italian_words
+    result = all_words.find_one({'_id': ObjectId(id)})
+    output = ''
+    if result:
+        output = result
+    return dumps({'result': output})
+
+@app.route('/<language>_id/<id>', methods= ['DELETE'])
+def del_by_id(language, id):
+    all_words = None
+    language = language.split()[0]
+    if language == 'english':
+        all_words = mongo.db.english_words
+    elif language == 'french':
+        all_words = mongo.db.french_words
+    elif language == 'italian':
+        all_words = mongo.db.italian_words
+    #result = all_words.find_one({'_id': ObjectId(id)})
+    all_words.delete_one({"_id":ObjectId(id)})
+    all_words.delete_one({"_id": id})
+    return f"Object {id} deleted"
+
 @app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
 @app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
+@app.route('/<language>/<path:word>', methods=['PATCH']) #pour avoir les details d'un mot
 def get_all_words(language, word):
     # on va selectioner la table selon la langue choisie
+    all_words = None
+    language = language.split()[0]
     if language == 'english':
         all_words = mongo.db.english_words
     elif language == 'french':
@@ -24,18 +64,23 @@ def get_all_words(language, word):
         for word in all_words.find():
             del word['_id'] #the value of this key is an ObjectId which is not JSON serializable
             output.append(word)
-        return jsonify({'result': output})
-    else:
-        result = all_words.find_one({'spelling' : word})
+        return dumps({'result': output})
+    elif request.method != "PATCH":
+        result = all_words.find({'spelling' : word})#, {'_id': False})
         if result:
-            del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
+            #del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
             output = result
         else:
             output = 'This word is not in our database'
-        return jsonify({'result': output})
+        return dumps({'result': output})
+    elif request.method == "PATCH":
+        data = request.get_json()
+        all_words.update({"spelling": word}, {'$set': data})
+        return "A new attribute {} has been added to the syllable {}".format(data, word)
 
 @app.route('/<language>_words/', methods=['POST'])
 def add_word(language):
+    all_words = None
     if language == 'english':
         all_words = mongo.db.english_words
     elif language == 'french':
@@ -43,6 +88,8 @@ def add_word(language):
     elif language == 'italian':
         all_words = mongo.db.italian_words
     data = request.get_json()
+    app.logger.critical('test')
+    app.logger.error(data)
     # nettoyer et transformer les donnees client
     if language == data['language']:
         pass
@@ -86,10 +133,24 @@ def get_all_syllables(language, ipa_syllable):
             return jsonify({'result': output})
     elif request.method == "PATCH":
         data = request.get_json()
-        print(data)
         all_syllables.update_one({"ipa_syllable": ipa_syllable}, {'$set': data})
         return "A new attribute {} has been added to the syllable {}".format(data, ipa_syllable)
 
+@app.route('/<language>_syllables/<syllable>/orthographic', methods=['GET'])
+def get_syllable_orthographic(language, syllable):
+    if language == 'english':
+        all_syllables = mongo.db.english_syllables
+    elif language == 'french':
+        all_syllables = mongo.db.french_syllables
+    elif language == 'italian':
+        all_syllables = mongo.db.italian_syllables
+    result = all_syllables.find_one({'orthographical_syllable': syllable})
+    if result:
+        del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
+        output = result
+    else:
+        output = 'This syllable is not in our database'
+    return jsonify({'result': output})
 
 
 @app.route('/<language>_syllables/', methods=['POST'])
@@ -118,4 +179,5 @@ def add_syllables(language):
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True, host='127.0.0.1', port=5001)
+    app.run(debug=True, host='0.0.0.0')

@@ -1,30 +1,36 @@
-from Flask.debug import *
+import requests
 import random
+import json
 
-app = Flask(__name__)
 
-app.config['MONGO_DBNAME'] = 'phonetoque'  # mettre le nom de la bd
-app.config[
-    'MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque'  # mettre le lien de la db avec username et password
-app.config['JSON_AS_ASCII'] = False
+# API_URL = 'http://0.0.0.0:5000'
+API_URL = 'http://127.0.0.1:5001'
 
-mongo = PyMongo(app)
+
+# -------------- Fonctions pour calculer les stats sur les syllabes ------------------------- #
+
 
 # Ici, pour un mot donné, on incrémente les statistiques de ses syllabes adjacentes
-# ex : get_statistics('english',["dɑ","kjə","mɛn","təɹ","i"])
 def get_statistics(language,word):
-    syll_coll = get_collection_syllables(language)
     i = 0
-    for syllable in word:
+    length = len(word['syllables_ipa'])
+    for syllable in word['syllables_ipa']:
 
         # récupération de la syllabe dans la BD ou création d'une nouvelle
-        syll = syll_coll.find_one({'ipa_syllable':syllable})
+        syll = requests.get(f'{API_URL}/{language}_syllables/{syllable}').json()['result']
         new = False
-        if syll is None:
+        if type(syll) is str:
             new = True
+            try :
+                ortho = word['syllables'][i]
+            except (KeyError,IndexError):
+                ortho = ""
             syll = {
                 'language' : language,
-                'ipa_syllable' : syllable
+                'ipa_syllable' : syllable,
+                'orthographical_syllable' : ortho,
+                'preceding_ipa_syllable' : {},
+                'following_ipa_syllable' : {}
             }
 
         # ajout de la syllabe précédente dans les statistiques
@@ -40,7 +46,7 @@ def get_statistics(language,word):
             syll['preceding_ipa_syllable'] = {previous : 1}
 
         # ajout de la syllabe suivante dans les statistiques
-        if i < len(word) - 1:
+        if i < length - 1:
             next = word[i+1]
         else:
             next = " "
@@ -53,77 +59,52 @@ def get_statistics(language,word):
 
         # mettre à jour dans la DB
         if not new:
-            syll_coll.replace_one({'ipa_syllable':syllable},syll)
+            requests.patch(f"{API_URL}/{language}_syllables/{syllable}", headers={'Content-Type': 'application/json'},
+                           data=json.dumps(syll))
+            print('syllabe modifiée : ',syll)
         else:
-            syll_coll.insert(syll)
+            requests.post(f"{API_URL}/{language}_syllables/", headers={'Content-Type': 'application/json'},
+                          data=json.dumps(syll))
+            print('syllabe ajoutée : ', syll)
 
         i += 1
+
     return 'Done'
 
 
-@app.route('/stats/<language>/')
 # Cette fonction permet de calculer toutes les stats sur les syllabes adjacentes dans une langue donnée à l'aide
 # de la fonction précédente
 def stats(language):
-    collection = get_collection(language)
-    for word in collection.find():
+    erase_stats(language)
+    i = 0
+    for word in requests.get(f'{API_URL}/{language}/').json()["result"]:
+        if i == 40 :
+            break
+        else:
+            i += 1
         try :
-            get_statistics(language,word['syllables_ipa'])
+            get_statistics(language,word)
         except:
             print('Problème pour le mot ',word['spelling'],word['spelling_ipa'])
     space(language)
     return 'Done'
 
 
-# inutile ?
-def generate(language,spelling):
-    collection = get_collection_syllables(language)
-    spelling = collection.find_one({'orthographical_syllable':spelling})['ipa_syllable']
-    sentence = ""
-    pronunciation = ""
-    for i in range(10):
-        try:
-            syll = collection.find_one({'ipa_syllable':spelling})
-            sentence += syll['orthographical_syllable'] + "-"
-            pronunciation += syll['ipa_syllable']
-        except:
-            if spelling != " ":
-                print('Problème pour la syllabe : ', spelling)
-            break
-        try:
-            spelling = probable(syll['following_ipa_syllable'],pronunciation)
-        except:
-            break
-    return sentence, pronunciation
-
-
-# Renvoi l'élément de  dic avec le score le plus grand dont la clé ne se trouve pas dans string
-# probable({'a': 1, 'b': 2, 'c': 3}, 'cet'} retourne b
-def probable(dic, string):
-    max = 0
-    result = ""
-    for syllable in dic.keys():
-        if (syllable not in string) and (dic[syllable] > max):
-            result = syllable
-    return result
-
-
 # Permet de remettre à 0 toutes les stats sur les syllabes précédentes et suivantes d'une langue
-@app.route('/erase_stats/<language>')
 def erase_stats(language):
-    collection = get_collection_syllables(language)
-    for syllable in collection.find():
+    for syllable in requests.get(f'{API_URL}/{language}_syllables/').json()["result"]:
+        ipa = syllable['ipa_syllable']
         syllable['following_ipa_syllable'] = {}
         syllable['preceding_ipa_syllable'] = {}
-        collection.replace_one({'_id':syllable['_id']},syllable)
+        requests.patch(f"{API_URL}/{language}_syllables/{ipa}", headers={'Content-Type': 'application/json'},
+                       data=json.dumps(syllable))
 
 
 # permet d'ajouter l'espace " " comme une syllabe
 def space(language):
-    collection = get_collection_syllables(language)
     begin = {}
     end = {}
-    for doc in collection.find():
+    for doc in requests.get(f'{API_URL}/{language}_syllables/').json()["result"]:
         try :
             if " " in doc['preceding_ipa_syllable'].keys():
                 begin[doc['ipa_syllable']] = doc['preceding_ipa_syllable'][" "]
@@ -131,50 +112,97 @@ def space(language):
                 end[doc['ipa_syllable']] = doc['following_ipa_syllable'][" "]
         except Exception:
             print("La syllabe ",doc['orthographical_syllable']," présente un problème")
-    collection.insert({
-        'language' : language,
-        'orthographical_syllable': " ",
+    insert = {
+        'language': language,
+        'orthographical_syllable': "espace",
         'ipa_syllable': " ",
         'preceding_ipa_syllable': end,
         'following_ipa_syllable': begin
-    })
+    }
+    requests.post(f"{API_URL}/{language}_syllables/", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
+
+
+# -------------- Fonctions pour générer des mots aléatoires ------------------------- #
 
 
 # permet de générer une suite pseudo-aléatoire de mots en donnant la première syllabe
-# ici une même syllabe ne peut pas être utilisée 2 fois
-@app.route('/generate_sentence/<language>/<first>')
-def generate_all_different_down(language,first):
-    collection = get_collection_syllables(language)
-    current = collection.find_one({'orthographical_syllable': first})['ipa_syllable']
+# les mots déjà existants sont supprimés
+def generate_new_down(language,length=10):
+    space = requests.get(f'{API_URL}/{language}_syllables/espace/orthographic').json()['result']
+    current = possible(space['following_ipa_syllable'])
     sentence = ""
     pronunciation = ""
-    used = []
-    for i in range(30):
-        try:
-            syll = collection.find_one({'ipa_syllable': current})
-            sentence += syll['orthographical_syllable'] + "-"
-            pronunciation += syll['ipa_syllable']
-        except:
-            if current != " ":
+    words = []
+    i = 0
+    while i < length:
+        word = ""
+        word_pronunciation = ""
+        while current != " ":
+            try:
+                syll = requests.get(f'{API_URL}/{language}_syllables/{current}').json()['result']
+                word += syll['orthographical_syllable'] + "-"
+                word_pronunciation += syll['ipa_syllable']
+                current = possible(syll['following_ipa_syllable'])
+            except KeyError:
                 print('Problème pour la syllabe : ', current)
-            break
-        try:
-            current = possible(syll['following_ipa_syllable'], used)
-            if current != " ":
-                used += [current]
-        except:
-            break
+                current = " "
+        if word not in words:
+            existence = requests.get(f'{API_URL}/{language}/{word_pronunciation}/phonetic').json()['result']
+            if existence == []:
+                words += word
+                sentence += word + " "
+                pronunciation += word_pronunciation + " "
+                current = possible(space['following_ipa_syllable'])
+                i += 1
+            else:
+                print('Mot ', existence[0]['spelling'],' (', word_pronunciation, ') retrouvé')
+                current = possible(space['following_ipa_syllable'])
     print(sentence)
     print(sentence.replace('-',''))
     print(pronunciation)
-    print(used)
+    return sentence
+
+
+def generate_new_up(language,length=10):
+    space = requests.get(f'{API_URL}/{language}_syllables/espace/orthographic').json()['result']
+    current = possible(space['preceding_ipa_syllable'])
+    sentence = ""
+    pronunciation = ""
+    words = []
+    i = 0
+    while i < length:
+        word = ""
+        word_pronunciation = ""
+        while current != " ":
+            try:
+                syll = requests.get(f'{API_URL}/{language}_syllables/{current}').json()['result']
+                word = syll['orthographical_syllable'] + "-" + word
+                word_pronunciation = syll['ipa_syllable'] + word_pronunciation
+                current = possible(syll['preceding_ipa_syllable'])
+            except KeyError:
+                print('Problème pour la syllabe : ', current)
+                current = " "
+        if word not in words:
+            existence = requests.get(f'{API_URL}/{language}/{word_pronunciation}/phonetic').json()['result']
+            if existence == []:
+                words += word
+                sentence = word + " " + sentence
+                pronunciation = word_pronunciation + " " + pronunciation
+                current = possible(space['preceding_ipa_syllable'])
+                i += 1
+            else:
+                print('Mot ', existence[0]['spelling'],' (', word_pronunciation, ') retrouvé')
+                current = possible(space['preceding_ipa_syllable'])
+    print(sentence)
+    print(sentence.replace('-',''))
+    print(pronunciation)
     return sentence
 
 
 # Retourne une syllabe possible parmi les syllabes de following, mais omet celles de used :
 # possible({'mon': 1, 'ton' : 4, 'son': 3, 'tan': 2}, ['mon','ton']) retourne 'son' avec une probabilité de 0.6 et
 # 'tan' avec une probabilité de 0.4
-def possible(following, used):
+def possible(following, used=[]):
     possibilities = []
     for key in following.keys():
         if key not in used:
@@ -184,5 +212,18 @@ def possible(following, used):
     return possibilities[number]
 
 
+# Renvoie l'élément de  dic avec le score le plus grand dont la clé ne se trouve pas dans string
+# probable({'a': 1, 'b': 2, 'c': 3}, 'cet'} retourne b
+def probable(dic, string=""):
+    max = 0
+    result = ""
+    for syllable in dic.keys():
+        if (syllable not in string) and (dic[syllable] > max):
+            result = syllable
+    return result
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    #print(requests.get(f'{API_URL}/french/ʒənu/phonetic').json()['result'])
+    generate_new_up('french')
+    generate_new_down('french')

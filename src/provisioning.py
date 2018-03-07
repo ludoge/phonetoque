@@ -26,9 +26,16 @@ class PhonetoqueRequest(object):
         Syllabifies words and pronunciations
         :return:
         """
-        self.pronunciations = {self.hyphenation_dict.inserted("  "+k+"  ").strip():
-                                   [self.ipa_hyphenation_dict.inserted("  "+x+"  ").strip() for x in v]
+        self.pronunciations = {self.hyphenation_dict.inserted(k).strip():
+                                   [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
                                for k, v in self.pronunciations.items()}
+
+    def get_ipa_syllabification(self, word):
+        """
+    
+        """
+        syllabed_word = self.ipa_hyphenation_dict.inserted(word)
+        return syllabed_word
 
     def post_word_to_db(self, word):
         spelling = word.replace("-", "").lower()
@@ -118,20 +125,24 @@ class PhonetoqueRequest(object):
             other_language_syllables_routes = self.url + "/" + language + "_syllables/"
             try:
                 r = requests.get(other_language_syllables_routes)
+                dico = json.loads(r.content)
+                other_language_syllables = dico['result']
             except requests.exceptions.RequestException as e:
                 print("Error with the request:")
                 print(e)
-            dico = json.loads(r.content)
-            other_language_syllables = dico['result']
+                other_language_syllables = []
             for syllable in language_syllables:
-                score = -1
+                score = 0
+                payload = {}
                 for other_syllable in other_language_syllables:
                     new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'], other_syllable['ipa_syllable'])
-                    if new_score > score:
-                        payload = {language: other_syllable['ipa_syllable']}
-                        score = new_score
-                response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
-                print(syllable['ipa_syllable'], payload, score)
+                    #print(new_score)
+                    if new_score > score and new_score > 0:
+                        score = round(new_score, 3)
+                        payload = {language: other_syllable['ipa_syllable'], f"{language}_score": score}
+                if score > 0:
+                    response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+                print(syllable['ipa_syllable'], payload)
 
     def post_syllable_to_db(self, ipa_syllable):
         """
