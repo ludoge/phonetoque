@@ -91,7 +91,10 @@ def translitterate():
         if language1 == language2:
             return render_template('translitteration.html',post=False,message=u'Entrez deux langages différents pour la translittération !')
             # on récupère la prononciation du mot
-        word = requests.get(f'{API_URL}/{language1}/{spelling}').json()['result'][0]
+        try:
+            word = requests.get(f'{API_URL}/{language1}/{spelling}').json()['result'][0]
+        except IndexError:
+            word = None
         if word is None:
             return render_template('translitteration.html',post=False, message=u"Ce mot n'est pas répertorié !")
         syllables_ipa1 = word['syllables_ipa']
