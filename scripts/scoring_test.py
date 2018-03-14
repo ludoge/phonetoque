@@ -1,29 +1,21 @@
-import requests
-from bs4 import BeautifulSoup
-import numpy as np
+from src.scores import Scoring
+import argparse
+import yaml
 
-DEBUG_URL = 'http://127.0.0.1:5000'
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--language', help='specify the source language of the data used', required=True)
+    parser.add_argument('--language2', help='specify the destination language of the data used', required=True)
+    parser.add_argument('-i', help='path to input word list', required=True, dest='input_file')
+    parser.add_argument('--conf', help='path to configuration file for scripts', default='scripts/script_config.yml')
+    args = parser.parse_args()
 
-def get_word_score(language1, language2, spelling):
-    response = requests.post(f'{DEBUG_URL}/translitteration/', data = {'language1': language1, 'language2': language2, 'spelling': spelling})
-    data = response.text
-    soup = BeautifulSoup(data, "html5lib")
-    score = soup.find(id="harmonic_mean").getText()
-    return(int(score[:-2]))
+    with open(args.conf, encoding='utf-8') as f:
+        config = yaml.safe_load(f)
+    config['language'] = args.language
+    config['language2'] = args.language2
+    
+    english_to_french = Scoring(config)
 
-def get_score(language1, language2, text_file):
-    with open(text_file) as text_file:
-        all_scores = []
-        not_found = 0
-        for word in text_file:
-            try:
-                score = get_word_score(language1, language2, word)
-                all_scores += [score]
-            except AttributeError:
-                # all_scores += [0]
-                not_found += 1
-        total_number_of_words = len(all_scores) + not_found
-        return f"Total score: {round(np.mean(all_scores),2)}, total number of words: {total_number_of_words}, not found words: {not_found}" 
-
-english_to_french = get_score('english', 'french', '1000CommonWords.txt')
-print(english_to_french)
+    score = english_to_french.get_score(args.input_file)
+    print(score)
