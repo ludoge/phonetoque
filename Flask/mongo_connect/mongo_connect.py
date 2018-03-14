@@ -46,9 +46,10 @@ def del_by_id(language, id):
     all_words.delete_one({"_id": id})
     return f"Object {id} deleted"
 
-@app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
-@app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
-@app.route('/<language>/<path:word>', methods=['PATCH']) #pour avoir les details d'un mot
+
+@app.route('/<language>/', defaults={'word': ''}, methods=['GET'])  # pour avoir tous les mots dans une langue
+@app.route('/<language>/<path:word>', methods=['GET'])  # pour avoir les details d'un mot
+@app.route('/<language>/<path:word>', methods=['PATCH'])  # pour avoir les details d'un mot
 def get_all_words(language, word):
     # on va selectioner la table selon la langue choisie
     all_words = None
@@ -79,10 +80,10 @@ def get_all_words(language, word):
         return "A new attribute {} has been added to the word {}".format(data, word)
 
 
-@app.route('/<language>/<path:phonetic>/phonetic', methods=['GET']) #pour avoir les details d'un mot avec son écriture phonétique
-@app.route('/<language>/<path:phonetic>/phonetic', methods=['PATCH']) #pour avoir les details d'un mot avec son écriture phonétique
+@app.route('/<language>/<path:phonetic>/phonetic', methods=['GET']) # pour avoir les details d'un mot avec son écriture phonétique
+@app.route('/<language>/<path:phonetic>/phonetic', methods=['PATCH']) # pour modifier un mot à partir de son écriture phonétique
 def get_all_words_by_phonetic(language, phonetic):
-    # on va selectioner la table selon la langue choisie
+    # we select the table according to the given language
     all_words = None
     language = language.split()[0]
     if language == 'english':
@@ -94,13 +95,13 @@ def get_all_words_by_phonetic(language, phonetic):
     if phonetic == "":
         output = []
         for word in all_words.find():
-            del word['_id'] #the value of this key is an ObjectId which is not JSON serializable
+            del word['_id']  # the value of this key is an ObjectId which is not JSON serializable
             output.append(word)
         return dumps({'result': output})
     elif request.method != "PATCH":
         result = all_words.find({'spelling_ipa' : phonetic})#, {'_id': False})
         if result:
-            #del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
+            # del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
             output = result
         else:
             output = 'This word is not in our database'
@@ -206,8 +207,8 @@ def add_syllables(language):
     #     raise ValueError('word entered in wrong language')
     ipa_syllable = data['ipa_syllable']
     orthographical_syllable = data['orthographical_syllable']
-    preceding_ipa_syllable = data['preceding_syllable']
-    following_ipa_syllable = data['following_syllable']
+    preceding_ipa_syllable = data['preceding_ipa_syllable']
+    following_ipa_syllable = data['following_ipa_syllable']
     db_insert = {'ipa_syllable': ipa_syllable, 'orthographical_syllable': orthographical_syllable, 'preceding_ipa_syllable':preceding_ipa_syllable, 'following_ipa_syllable': following_ipa_syllable}
     all_syllables.insert(db_insert)
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
