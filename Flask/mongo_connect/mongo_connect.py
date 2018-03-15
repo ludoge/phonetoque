@@ -122,7 +122,40 @@ def get_all_words(language, word):
     elif request.method == "PATCH":
         data = request.get_json()
         all_words.update({"spelling": word}, {'$set': data})
-        return "A new attribute {} has been added to the syllable {}".format(data, word)
+        return "A new attribute {} has been added to the word {}".format(data, word)
+
+
+@app.route('/<language>/<path:phonetic>/phonetic', methods=['GET']) # pour avoir les details d'un mot avec son écriture phonétique
+@app.route('/<language>/<path:phonetic>/phonetic', methods=['PATCH']) # pour modifier un mot à partir de son écriture phonétique
+def get_all_words_by_phonetic(language, phonetic):
+    # we select the table according to the given language
+    all_words = None
+    language = language.split()[0]
+    if language == 'english':
+        all_words = mongo.db.english_words
+    elif language == 'french':
+        all_words = mongo.db.french_words
+    elif language == 'italian':
+        all_words = mongo.db.italian_words
+    if phonetic == "":
+        output = []
+        for word in all_words.find():
+            del word['_id']  # the value of this key is an ObjectId which is not JSON serializable
+            output.append(word)
+        return dumps({'result': output})
+    elif request.method != "PATCH":
+        result = all_words.find({'spelling_ipa' : phonetic})#, {'_id': False})
+        if result:
+            # del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
+            output = result
+        else:
+            output = 'This word is not in our database'
+        return dumps({'result': output})
+    elif request.method == "PATCH":
+        data = request.get_json()
+        all_words.update({"spelling_ipa": phonetic}, {'$set': data})
+        return "A new attribute {} has been added to the phonetic word {}".format(data, phonetic)
+
 
 @app.route('/<language>_words/', methods=['POST'])
 def add_word(language):
@@ -182,6 +215,7 @@ def get_all_syllables(language, ipa_syllable):
         all_syllables.update_one({"ipa_syllable": ipa_syllable}, {'$set': data})
         return "A new attribute {} has been added to the syllable {}".format(data, ipa_syllable)
 
+
 @app.route('/<language>_syllables/<syllable>/orthographic', methods=['GET'])
 def get_syllable_orthographic(language, syllable):
     if language == 'english':
@@ -202,7 +236,7 @@ def get_syllable_orthographic(language, syllable):
 @app.route('/<language>_syllables/', methods=['POST'])
 def add_syllables(language):
     """
-    to add new sylables
+    to add new syllables
     """
     if language == 'english':
         all_syllables = mongo.db.english_syllables
@@ -218,12 +252,13 @@ def add_syllables(language):
     #     raise ValueError('word entered in wrong language')
     ipa_syllable = data['ipa_syllable']
     orthographical_syllable = data['orthographical_syllable']
-    preceding_ipa_syllable = data['preceding_syllable']
-    following_ipa_syllable = data['following_syllable']
+    preceding_ipa_syllable = data['preceding_ipa_syllable']
+    following_ipa_syllable = data['following_ipa_syllable']
     db_insert = {'ipa_syllable': ipa_syllable, 'orthographical_syllable': orthographical_syllable, 'preceding_ipa_syllable':preceding_ipa_syllable, 'following_ipa_syllable': following_ipa_syllable}
     all_syllables.insert(db_insert)
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
 
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5001)
-    # app.run(debug=True, host='0.0.0.0')
+    #app.run(debug=True, host='0.0.0.0')
