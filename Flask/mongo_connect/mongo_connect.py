@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify, make_response
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from bson.json_util import dumps
+import json
+import requests
+from scipy import stats
 
 app = Flask(__name__)
 
@@ -9,11 +12,54 @@ app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
 app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
 app.config['JSON_AS_ASCII'] = False
 
+API_URL = 'http://127.0.0.1:5001'
+
 mongo = PyMongo(app)
 
 @app.route('/', methods = ['GET']) #pour avoir tous les mots dans une langue
 def default_route():
     return("Welcome to Phonetoque API !")
+
+@app.route('/translitteration/', methods=['POST','GET'])
+def translitterate():
+    if request.method == 'GET':
+        return dumps({'post': False, 'message':'Essayez avec une methode post !'})
+    else:
+        # on récupère les données de la requête
+        content = request.get_json()
+        print(content)
+        spelling = content['spelling']
+        language1 = content['language1']
+        language2 = content['language2']
+        if language1 == language2:
+            return dumps({'post':False, 'message': u'Entrez deux langages différents pour la translittération !'})
+            # on récupère la prononciation du mot
+        response = json.loads(get_all_words(language1, spelling))['result']
+        if response == []:
+            return dumps({'post':False, 'message':u"Ce mot n'est pas répertorié !"})
+        word = response[0]
+        syllables_ipa1 = word['syllables_ipa']
+        syllables = []
+        syllables_ipa2 = []
+        translitteration_score = []
+        for syll in syllables_ipa1:
+            try:
+                # on cherche la correspondance de chaque syllabe dans la 2eme langue
+                response = json.loads(get_all_syllables(language1, syll))['result']
+                # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
+                syll1 = response[language2]
+                score = response[f'{language2}_score']
+                syllables_ipa2 += [syll1]
+                translitteration_score += [score]
+                # syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
+                syll2 = json.loads(get_all_syllables(language2, syll1))['result']['orthographical_syllable']
+                syllables += [syll2]
+            except (KeyError, TypeError):
+                syllables_ipa2 += ["~"]
+                syllables += ["~"]
+                translitteration_score += [0.001]
+        harmonic_mean = int(100*round(stats.hmean(translitteration_score),2))
+        return dumps({'post':True, 'spelling': spelling, 'syllables': syllables, 'language1' : language1, 'language2': language2, 'word_syllables':word['syllables'], 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2, 'harmonic_mean': harmonic_mean})    
 
 @app.route('/<language>_id/<id>', methods= ['GET'])
 def get_by_id(language, id):
@@ -46,8 +92,8 @@ def del_by_id(language, id):
     all_words.delete_one({"_id": id})
     return f"Object {id} deleted"
 
-@app.route('/<language>/', defaults={'word': ''}, methods = ['GET']) #pour avoir tous les mots dans une langue
-@app.route('/<language>/<path:word>', methods=['GET']) #pour avoir les details d'un mot
+@app.route('/<language>/', defaults={'word': ''}, methods = ['GET', 'POST']) #pour avoir tous les mots dans une langue
+@app.route('/<language>/<path:word>', methods=['GET', 'POST']) #pour avoir les details d'un mot
 @app.route('/<language>/<path:word>', methods=['PATCH']) #pour avoir les details d'un mot
 def get_all_words(language, word):
     # on va selectioner la table selon la langue choisie
@@ -71,7 +117,7 @@ def get_all_words(language, word):
             #del result['_id'] #the value of this key is an ObjectId which is not JSON serializable
             output = result
         else:
-            output = 'This word is not in our database'
+            output = '~'
         return dumps({'result': output})
     elif request.method == "PATCH":
         data = request.get_json()
@@ -104,8 +150,8 @@ def add_word(language):
     return "The word {} has been added to the {} database".format(spelling, language)
 
 
-@app.route('/<language>_syllables/', defaults={'ipa_syllable': ''}, methods = ['GET']) #pour avoir toutes les syllabes dans une langue
-@app.route('/<language>_syllables/<path:ipa_syllable>', methods=['GET']) #pour avoir des details sur une syllabe
+@app.route('/<language>_syllables/', defaults={'ipa_syllable': ''}, methods = ['GET', 'POST']) #pour avoir toutes les syllabes dans une langue
+@app.route('/<language>_syllables/<path:ipa_syllable>', methods=['GET', 'POST']) #pour avoir des details sur une syllabe
 @app.route('/<language>_syllables/<path:ipa_syllable>', methods=['PATCH']) #pour rajouter des attributs en plus sur une syllabe
 def get_all_syllables(language, ipa_syllable):
     # on va selectionner la table selon la langue choisie
@@ -115,14 +161,14 @@ def get_all_syllables(language, ipa_syllable):
         all_syllables = mongo.db.french_syllables
     elif language == 'italian':
         all_syllables = mongo.db.italian_syllables
-    if request.method == "GET":
+    if request.method != "PATCH":
         if ipa_syllable == "":
             output = []
             result = all_syllables.find()
             for syllable in result:
                 del syllable['_id'] #the value of this key is an ObjectId which is not JSON serializable
                 output.append(syllable)
-            return jsonify({'result': output})
+            return dumps({'result': output})
         else:
             result = all_syllables.find_one({'ipa_syllable' : ipa_syllable})
             if result:
@@ -130,7 +176,7 @@ def get_all_syllables(language, ipa_syllable):
                 output = result
             else:
                 output = 'This syllable is not in our database'
-            return jsonify({'result': output})
+            return dumps({'result': output})
     elif request.method == "PATCH":
         data = request.get_json()
         all_syllables.update_one({"ipa_syllable": ipa_syllable}, {'$set': data})
@@ -150,7 +196,7 @@ def get_syllable_orthographic(language, syllable):
         output = result
     else:
         output = 'This syllable is not in our database'
-    return jsonify({'result': output})
+    return dumps({'result': output})
 
 
 @app.route('/<language>_syllables/', methods=['POST'])
