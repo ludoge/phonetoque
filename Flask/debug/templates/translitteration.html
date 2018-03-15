@@ -32,7 +32,7 @@
         <p style="font-size:40px;">  {{syllables[0]}}{% for syll in syllables[1:] %} · {{syll}}{% endfor %} </p>
         <p style="color:grey;font-size:20px;">  {{syllables_ipa[0]}}{% for syll in syllables_ipa[1:] %} · {{syll}}{% endfor %} </p>
         <p style="color:grey;font-size:20px;"> {{syllables_ipa2[0]}}{% for syll in syllables_ipa2[1:] %} · {{syll}}{% endfor %} </p>
-        <p style="color:grey;font-size:20px;">{{harmonic_mean}} %</p>
+        <p style="color:grey;font-size:20px;" id="harmonic_mean">{{harmonic_mean}} %</p>
         <p style="font-size:40px;"> {{result[0]}}{% for syll in result[1:] %} · {{syll}}{% endfor %} </p>
     <div/>
     {% endif %}

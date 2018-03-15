@@ -82,43 +82,24 @@ def all_words(language=None,spelling=None):
 @app.route('/translitteration/',methods=['POST','GET'])
 def translitterate():
     if request.method == 'GET':
-        return render_template('translitteration.html',post=False)
-    else:
-            # on récupère les données de la requête
-        spelling = request.form['spelling']
-        language1 = request.form['language1']
-        language2 = request.form['language2']
-        if language1 == language2:
-            return render_template('translitteration.html',post=False,message=u'Entrez deux langages différents pour la translittération !')
-            # on récupère la prononciation du mot
-        try:
-            word = requests.get(f'{API_URL}/{language1}/{spelling}').json()['result'][0]
-        except IndexError:
-            word = None
-        if word is None:
-            return render_template('translitteration.html',post=False, message=u"Ce mot n'est pas répertorié !")
-        syllables_ipa1 = word['syllables_ipa']
-
-        syllables = []
-        syllables_ipa2 = []
-        translitteration_score = []
-        for syll in syllables_ipa1:
-            try:
-                # on cherche la correspondance de chaque syllabe dans la 2eme langue
-                response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
-                syll1 = response[language2]
-                score = response[f'{language2}_score']
-                syllables_ipa2 += [syll1]
-                translitteration_score += [score]
-                syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
-
-                syllables += [syll2]
-            except (KeyError, TypeError):
-                syllables_ipa2 += ["~"]
-                syllables += ["~"]
-                translitteration_score += [0.001]
-        harmonic_mean = int(100*round(stats.hmean(translitteration_score),2))
-        return render_template('translitteration.html',post=True,word=spelling,result=syllables,language1=language1,language2=language2,syllables=word['syllables'],syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2, harmonic_mean=harmonic_mean)
+        default = {'language':'english', 'spelling':'', 'spelling_ipa':'', 'syllables':[], 'syllables_ipa':[] }
+        return render_template('translitteration.html',post= False)
+    elif request.method == 'POST':
+        payload = {'spelling':request.form['spelling'], 'language1':request.form['language1'], 'language2':request.form['language2']}
+        response = requests.post(f'{API_URL}/translitteration/', headers={'Content-Type': 'application/json'}, data = json.dumps(payload)).json()
+        post = response['post']
+        if post is False:
+            message = response['message']
+            return render_template('translitteration.html',post=post, message = message)
+        else:
+            word = response['spelling']
+            syllables = response['syllables']
+            language1 = response['language1']
+            language2 = response['language2']
+            syllables_ipa1 = response['syllables_ipa1']
+            syllables_ipa2 = response['syllables_ipa2']
+            harmonic_mean = response['harmonic_mean']
+            return render_template('translitteration.html',post=post,word=word,result=syllables,language1=language1,language2=language2,syllables=syllables,syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2, harmonic_mean=harmonic_mean)
 
 
 @app.route('/delete/<language>/<id>/')
