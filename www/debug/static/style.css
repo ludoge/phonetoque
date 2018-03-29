@@ -1,0 +1,47 @@
+/*balises*/
+
+body{
+    margin: 5%;
+    padding: 5%;
+}
+
+header{
+    height: 80px;
+}
+
+/*classes*/
+
+.cover{
+    display: block;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+.top-buffer{
+    margin-top: 50px;
+}
+
+.bottom-buffer{
+    margin-bottom: 50px;
+}
+
+.container{
+    width:100%;
+}
+
+.card{
+    height:200px;
+}
+
+td /* Toutes les cellules des tableaux... */
+{
+    border: 2px ; /* auront une bordure de 1px */
+}
+
+/*id*/
+
+#main {
+    width:90%;
+    max-width: 1500px;
+    margin: auto;
+}
