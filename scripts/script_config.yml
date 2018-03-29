@@ -23,6 +23,9 @@ ipa_hyphenation_dict:
   french: ipa_fr
 
 server_url:
+  http://127.0.0.1:5001
+
+debug_url:
   http://127.0.0.1:5000
 
 simplifying:
@@ -59,5 +62,8 @@ simplifying:
     ʎ: j
     ʝ: j
     έ: e
+    n̩: n
+    l̩: l
+    ̩: ''
   french:
     a: a

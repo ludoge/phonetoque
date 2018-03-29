@@ -1,31 +1,34 @@
 properties:
-  nasal: 8
-  stop: 3
-  sibilant: 5
-  fricative: 3
-  approximant: 3
-  flap: 3
-  trill: 3
-  lateral_fricative: 5
-  lateral_approximant: 5
-  lateral_flap: 5
-  bilabial: 5
-  labio_dental: 5
-  linguo_labial: 5
-  dental: 4
-  alveolar: 4
-  post_alveolar: 4
-  retroflex: 5
-  palatal: 5
-  velar: 5
-  uvular: 5
-  pharyngeal: 5
-  epiglottal: 5
-  glottal: 5
-  voiceless: 3
-  voiced: 3
-  r_sound: 10
-  coarticulated: 5
+  manner :
+    nasal: 8
+    stop: 3
+    sibilant: 5
+    fricative: 3
+    approximant: 3
+    flap: 3
+    trill: 3
+    lateral_fricative: 5
+    lateral_approximant: 5
+    lateral_flap: 5
+  place:
+    bilabial: 5
+    labio_dental: 5
+    linguo_labial: 5
+    dental: 4
+    alveolar: 4
+    post_alveolar: 4
+    retroflex: 5
+    palatal: 5
+    velar: 5
+    uvular: 5
+    pharyngeal: 5
+    epiglottal: 5
+    glottal: 5
+  other:
+    voiceless: 3
+    voiced: 3
+    r_sound: 10
+    coarticulated: 5
    
 
 nasal:

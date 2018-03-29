@@ -22,13 +22,13 @@
         </tr>
         {% for word in all_words %}
             <tr>
-                <td style="width:50px"> {{word.id}} </td>
+                <td style="width:50px"> {{word._id}} </td>
                 <td style="width:100px"> {{word.spelling_ipa}} </td>
                 <td style="width:100px"> {{word.syllables}} </td>
                 <td style="width:100px"> {{word.syllables_ipa}} </td>
-                <td style="width:100px">{% set url1 = '/modify_word/'+word.language+'/'+word.id %}
+                <td style="width:100px">{% set url1 = '/modify_word/'+word.language+'/'+word._id %}
                     <a type="button" href="{{url1}}" > <span class="glyphicon glyphicon-pencil"></span> </a></td>
-                <td style="width:50px">{% set url2 = '/delete/'+word.language+'/'+word.id %}
+                <td style="width:50px">{% set url2 = '/delete/'+word.language+'/'+word._id %}
                     <a type="button" href="{{url2}}"> <span class="glyphicon glyphicon-trash"></span> </a></td>
             </tr>
         {% endfor %}

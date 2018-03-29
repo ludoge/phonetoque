@@ -7,6 +7,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('action', help='')
     parser.add_argument('--language', help='specify the language of the data used')
+    parser.add_argument('--language2', help='specify the other language of the data used')
     parser.add_argument('-i')
     parser.add_argument('-o')
     parser.add_argument('--conf', help='path to configuration file for scripts', default='scripts/script_config.yml')
