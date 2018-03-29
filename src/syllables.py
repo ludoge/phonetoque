@@ -27,12 +27,12 @@ class SyllableProcessor(object):
             if "ˌ" not in pron:
                 split = pron.replace("ˈ", ".").split(".")
                 for s in split:
-                    if len(s) > 4 and s not in self.known_syllables:  # 3 is arbitrary; there are some false positives but not too many
+                    if len(s) > 3 and s not in self.known_syllables:  # 3 is arbitrary; there are some false positives but not too many
                         res = False
             else:  # both intonation marks
                 split = pron.replace("ˈ", ".").replace("ˌ", ".").split(".")
                 for s in split:
-                    if len(s) > 4 and s not in self.known_syllables:
+                    if len(s) > 3 and s not in self.known_syllables:
                         res = False
         else:
             res = len(pron) < 5 and self.has_a_vowel(pron)
