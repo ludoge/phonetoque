@@ -1,0 +1,9 @@
+
+manner : 32.52 (+/- 9.77)   place : 26.42 (+/- 15.77)   other : 32.37 (+/- 11.01)   closedness : 27.49 (+/- 16.27)   frontness : 16.55 (+/- 3.31)   roundedness : 25.96 (+/- 7.86)   
+Convergence : 0.48%
+manner : 42.76 (+/- 9.01)   place : 23.2 (+/- 7.89)   other : 28.43 (+/- 1.59)   closedness : 18.62 (+/- 4.33)   frontness : 16.76 (+/- 2.35)   roundedness : 20.79 (+/- 1.22)   
+Convergence : 11.09%
+manner : 28.96 (+/- 10.39)   place : 20.93 (+/- 2.25)   other : 28.25 (+/- 1.06)   closedness : 19.29 (+/- 1.05)   frontness : 15.85 (+/- 1.71)   roundedness : 22.03 (+/- 1.15)   
+Convergence : 23.07%
+manner : 29.42 (+/- 0.52)   place : 15.62 (+/- 2.06)   other : 28.43 (+/- 0.38)   closedness : 20.83 (+/- 0.35)   frontness : 16.64 (+/- 0.66)   roundedness : 22.38 (+/- 0.48)   
+Convergence : 69.01%
