@@ -5,6 +5,7 @@ import requests
 import json
 from json import *
 from scipy import stats
+from src.sequence_statistics import generate_sentence
 
 app = Flask(__name__)
 
@@ -108,6 +109,17 @@ def delete(language, id):
     delete = requests.delete(f"{API_URL}/{language}_id/{id}")
     url = '/all_words/' + language + '/' + word
     return redirect(url)
+
+
+@app.route('/generate_words/')
+@app.route('/generate_words/<language>/')
+def generate_words(language='french'):
+    try:
+        words, phonems = generate_sentence(language,[3,8,7,6,2,9,4,3,5])
+        return render_template('generate_words.html',words=words, phonems=phonems, language=language)
+    except:
+        return redirect('/generate_words/'+language)
+
 
 if __name__ == '__main__':
     #print(get_word('french','test'))
