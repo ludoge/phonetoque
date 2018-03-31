@@ -24,7 +24,8 @@ hyper_parameters = {
     'other': 1,
     'closedness': 1,
     'frontness': 1,
-    'roundedness': 1
+    'roundedness': 1,
+    'balance': 4
 }
 
 
@@ -149,7 +150,7 @@ class SoundDistance(object):
                         dimensions += 1
                     except:
                         return 0, []
-            res = 1-res/(2*sqrt(dimensions))
+            res = 1-res/(hyper_parameters['balance']*sqrt(dimensions))
 
         return res, flatten(hypers)
 
@@ -265,16 +266,16 @@ if __name__ == '__main__':
     #
     # print(sd.detect_sounds('e̞ø̞'))
 
-    #print(sd.syllable_similarity('kæt', 'kɑt'))
+    print('cat cat',sd.syllable_similarity('kæt', 'kɑt'))
     print('kæt', 'dɔɡ',sd.syllable_similarity('kæt', 'dɔɡ'))
 
     # print(sd.syllable_similarity('kæt', 'dʌk'))
     # print(sd.syllable_similarity('dɔɡ', 'dʌk'))
-    # print(sd.syllable_similarity('dɔɡ', 'dɔɡz'))
+    print('dog dogs',sd.syllable_similarity('dɔɡ', 'dɔɡz'))
     # print(sd.syllable_similarity('dɔɡz', 'dɔɡzz'))
     # print(sd.syllable_similarity('dɔz', 'ftɔzz'))
-    # print(sd.syllable_similarity('dɔɡ', 'ɡɔd'))
-    # print(sd.syllable_similarity('bəʊn', 'bon'))
+    print('dog god',sd.syllable_similarity('dɔɡ', 'ɡɔd'))
+    print('bone bonne',sd.syllable_similarity('bəʊn', 'bon'))
     # print(sd.syllable_similarity('bəʊn', 'bəʊt'))
     # print(sd.syllable_similarity('ʃən', 'ʃɛl'))
     # print(sd.syllable_similarity('fɛt', 'fənt'))
