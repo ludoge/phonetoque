@@ -5,15 +5,17 @@ import requests
 import collections
 from src.sound_distance import SoundDistance
 
+
 class PhonetoqueRequest(object):
     """
     Prepares and posts pronunciation data to the REST API defined in configuration
     """
+
     def __init__(self, config):
         self.language = config['language']
         self.other_languages = [language for language in config['scraper_languages'] if language != self.language]
         self.hyphenation_dict = pyphen.Pyphen(lang=config['hyphenation_dict'])
-        self.ipa_hyphenation_dict = pyphen.Pyphen(lang=config['ipa_hyphenation_dict'])
+        # self.ipa_hyphenation_dict = pyphen.Pyphen(lang=config['ipa_hyphenation_dict'])
         self.url = config['server_url']
         self.pronunciations = {}
         self.all_words_route = self.url + "/" + self.language
@@ -27,26 +29,46 @@ class PhonetoqueRequest(object):
         :return:
         """
         self.pronunciations = {self.hyphenation_dict.inserted(k).strip():
-                                   [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
+                               # [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
+                                   v
                                for k, v in self.pronunciations.items()}
 
     def get_ipa_syllabification(self, word):
         """
     
         """
-        syllabed_word = self.ipa_hyphenation_dict.inserted(word)
-        return syllabed_word
+        # syllabed_word = self.ipa_hyphenation_dict.inserted(word)
+        return word
 
     def post_word_to_db(self, word):
-        spelling = word.replace("-", "").lower()
-        syllables = [x for x in word.split("-") if x != '']
         for pronunciation in self.pronunciations[word]:
-            spelling_ipa = pronunciation.replace("-","")
-            syllables_ipa = [x for x in pronunciation.split("-") if x!= '']
+            spelling = word.replace("-", "").lower()
+            syllables = [x for x in word.split("-") if x != '']
+            spelling_ipa = pronunciation.replace("-", "")
+            syllables_ipa = [x for x in pronunciation.split("-") if x != '']
 
-            if self.language == 'french':
-                if spelling[-1] == 'e' and len(syllables) == len(syllables_ipa)+1 and len(syllables) >= 2:
-                    syllables = syllables[:-2]+[syllables[-2]+syllables[-1]]
+
+            if self.language == 'french': # handles mute 'e' at the end
+                if spelling[-1] == 'e' and len(syllables) == len(syllables_ipa) + 1 and len(syllables) >= 2:
+                    syllables = syllables[:-2] + [syllables[-2] + syllables[-1]]
+
+            if self.language == 'english' and len(spelling)>2: # initial vowel is often a syllable by itself
+                if spelling[0] in 'aeiou' and spelling[2] in 'aeiou' and len(syllables) < len(syllables_ipa):
+                    syllables = [syllables[0][0] , syllables[0][1:]] + syllables[1:]
+                if spelling[0] in 'aeiou' and spelling[2] not in 'aeiou' and len(syllables) < len(syllables_ipa):
+                    syllables = [syllables[0][:2] , syllables[0][2:]] + syllables[1:]
+                    if '' in syllables:
+                        syllables.remove('')
+
+            # if the specific fixes above fail, map phonetic syllabification onto orthographical one
+            if len(spelling)==len(spelling_ipa) and len(syllables) != len(syllables_ipa):
+                lengths = [len(x) for x in syllables_ipa]
+                sts = spelling[:]
+                syllables = []
+                while lengths:
+                    syllables += [sts[:lengths[0]]]
+                    sts = sts[lengths[0]:]
+                    lengths = lengths[1:]
 
             payload = {
                 "language": self.language,
@@ -56,13 +78,13 @@ class PhonetoqueRequest(object):
                 "syllables_ipa": syllables_ipa
             }
             response = requests.post(f"{self.url}/{self.language}_words/", headers={'Content-Type': 'application/json'},
-                                 data=json.dumps(payload))
+                                     data=json.dumps(payload))
             logging.info(response.text)
 
     def post_all_words(self):
         for word in self.pronunciations:
             self.post_word_to_db(word)
-        
+
     def get_all_syllables(self):
         """
         Args:
@@ -91,13 +113,14 @@ class PhonetoqueRequest(object):
                 # spelling = word['spelling']
                 # else_words[spelling] = word
                 # to get the words for which the number of syllables and syllables_ipa is different 
-            else:    
+            else:
                 for i in range(len(word_syllables)):
                     syllable_ipa = word_syllables_ipa[i]
                     syllable = word_syllables[i]
                     all_syllables_ipa[syllable_ipa][syllable] += 1
-                counter +=1
-        print("Words with different number of phonetical and orhtographical syllables (not processed): {}".format(else_counter))
+                counter += 1
+        print("Words with different number of phonetical and orhtographical syllables (not processed): {}".format(
+            else_counter))
         print("Words with same number of phonetical and orhtographical syllables (processed): {}".format(counter))
         self.all_syllables_ipa = all_syllables_ipa
 
@@ -116,8 +139,8 @@ class PhonetoqueRequest(object):
             orth_syllables = max_syllables[ipa_syllable]
             max_orth_syllable = max(orth_syllables, key=orth_syllables.get)
             self.all_syllables_ipa[ipa_syllable] = max_orth_syllable
-    
-    def get_similar_syllables(self):  
+
+    def get_similar_syllables(self):
         req = requests.get(self.all_syllables_route)
         dico = json.loads(req.content)
         language_syllables = dico['result']
@@ -135,13 +158,15 @@ class PhonetoqueRequest(object):
                 score = 0
                 payload = {}
                 for other_syllable in other_language_syllables:
-                    new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'], other_syllable['ipa_syllable'])
-                    #print(new_score)
+                    new_score = self.sound_distance.syllable_similarity(syllable['ipa_syllable'],
+                                                                        other_syllable['ipa_syllable'])
+                    # print(new_score)
                     if new_score > score and new_score > 0:
                         score = round(new_score, 3)
                         payload = {language: other_syllable['ipa_syllable'], f"{language}_score": score}
                 if score > 0:
-                    response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+                    response = requests.patch(f"{self.url}/{self.language}_syllables/{syllable['ipa_syllable']}",
+                                              headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
                 print(syllable['ipa_syllable'], payload)
 
     def post_syllable_to_db(self, ipa_syllable):
@@ -151,15 +176,16 @@ class PhonetoqueRequest(object):
             ipa_syllable (str): the phonetical writing of the syllable
         """
         orthographical_syllable = self.all_syllables_ipa[ipa_syllable]
-        preceding_syllable = "" #to do: similar to get_max_syllables()
-        following_sylable = "" #to do: similar to get_max_syllables()
+        preceding_syllable = ""  # to do: similar to get_max_syllables()
+        following_sylable = ""  # to do: similar to get_max_syllables()
         payload = {
             "ipa_syllable": ipa_syllable,
             "orthographical_syllable": orthographical_syllable,
             "preceding_syllable": preceding_syllable,
             "following_syllable": following_sylable
-            }
-        response = requests.post(f"{self.url}/{self.language}_syllables/", headers={'Content-Type': 'application/json'}, data=json.dumps(payload))
+        }
+        response = requests.post(f"{self.url}/{self.language}_syllables/", headers={'Content-Type': 'application/json'},
+                                 data=json.dumps(payload))
         logging.info(response.text)
 
     def post_all_syllables(self):
