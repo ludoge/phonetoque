@@ -7,3 +7,19 @@ manner : 28.96 (+/- 10.39)   place : 20.93 (+/- 2.25)   other : 28.25 (+/- 1.06)
 Convergence : 23.07%
 manner : 29.42 (+/- 0.52)   place : 15.62 (+/- 2.06)   other : 28.43 (+/- 0.38)   closedness : 20.83 (+/- 0.35)   frontness : 16.64 (+/- 0.66)   roundedness : 22.38 (+/- 0.48)   
 Convergence : 69.01%
+manner : 6.25 (+/- 5.0)   place : 38.92 (+/- 31.13)   other : 36.64 (+/- 29.31)   closedness : 1.11 (+/- 0.89)   frontness : 21.6 (+/- 17.28)   roundedness : 3.25 (+/- 2.6)   balance : 14.16 (+/- 11.33)   
+Convergence : 0.03%
+manner : 7.16 (+/- 5.73)   place : 31.63 (+/- 25.31)   other : 21.77 (+/- 17.42)   closedness : 2.43 (+/- 1.95)   frontness : 34.17 (+/- 27.34)   roundedness : 6.99 (+/- 5.59)   balance : 14.16 (+/- 11.33)   
+Convergence : 0.04%
+manner : 1.98 (+/- 1.98)   place : 37.46 (+/- 37.46)   other : 16.12 (+/- 16.12)   closedness : 2.21 (+/- 2.21)   frontness : 34.17 (+/- 34.17)   roundedness : 0.3 (+/- 0.3)   balance : 14.8 (+/- 14.8)   
+Convergence : 0.01%
+manner : 0.34 (+/- 5.0)   place : 25.71 (+/- 5.0)   other : 3.35 (+/- 5.0)   closedness : 3.84 (+/- 5.0)   frontness : 34.17 (+/- 5.0)   roundedness : 0.6 (+/- 5.0)   balance : 31.19 (+/- 5.0)   
+Convergence : 5.41%
+manner : 34.49 (+/- 2.0)   place : 23.72 (+/- 2.0)   other : 6.21 (+/- 2.0)   closedness : 19.23 (+/- 2.0)   frontness : 21.04 (+/- 2.0)   roundedness : 29.42 (+/- 2.0)   balance : 2.94 (+/- 2.0)   
+Convergence : 31.14%
+manner : 36.24 (+/- 5.0)   place : 23.2 (+/- 5.0)   other : 7.69 (+/- 5.0)   closedness : 20.61 (+/- 5.0)   frontness : 17.91 (+/- 5.0)   roundedness : 32.03 (+/- 5.0)   balance : 4.07 (+/- 5.0)   
+Convergence : 5.41%
+manner : 35.52 (+/- 1.67)   place : 22.12 (+/- 1.67)   other : 16.06 (+/- 1.67)   closedness : 20.74 (+/- 1.67)   frontness : 27.96 (+/- 1.67)   roundedness : 42.47 (+/- 1.67)   balance : 4.07 (+/- 1.67)   
+Convergence : 37.82%
+manner : 36.11 (+/- 6.0)   place : 22.62 (+/- 6.0)   other : 14.74 (+/- 6.0)   closedness : 21.93 (+/- 6.0)   frontness : 29.14 (+/- 6.0)   roundedness : 42.66 (+/- 6.0)   balance : 2.66 (+/- 6.0)   
+Convergence : 3.02%

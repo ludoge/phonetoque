@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+
+{% block titre %}Génération aléatoire{% endblock %}
+
+{% block corps %}
+<h1> Génération aléatoire ({{language}}) </h1>
+
+<p style="font-size:30px"> {{words}}</p>
+<p style="font-size:30px"> {{phonems}}</p>
+
+<p class=top-buffer style="font-size:30px"> Nouvelle génération :
+<a style="font-size:30px" href="/generate_words/french"> Français </a> |
+<a style="font-size:30px" href="/generate_words/english"> Anglais </a>
+</p>
+
+{% endblock %}

@@ -69,30 +69,60 @@ def choice():
     data = request.form
     n_sample = int(data['n_sample'])
     n_parameters = int(data['n_parameters'])
-    list_of_parameters = json.loads(data['list_of_parameters'].replace("'",'"'))
+    list_of_parameters = json.loads(data['list_of_parameters'].replace("'", '"'))
     ratings = []
     for i in range(int(n_sample)):
         try:
             ratings.append(int(data['syllable' + str(i)]))
         except:
-            ratings.append(None)
+            ratings.append(-1) # -1 means no set of parameter was chosen by the user
+
+    best, score, variance = get_best_set(ratings)
+
     result = {}
-    for parameter in ['manner','place','other','closedness','frontness','roundedness']:
-        values = [list_of_parameters[i][parameter] for i in range(n_parameters)]
-        nb_values = 0
-        total_value = 0
-        var = 0
-        for i in range(n_sample):
-            if ratings[i]:
-                var += values[ratings[i]]**2
-                total_value += values[ratings[i]]
-                nb_values += 1
-        if nb_values > 0:
-            mean = total_value / nb_values
-            var = sqrt(var / nb_values - mean ** 2)
-            result[parameter] = [mean, var]
+    for parameter in ['manner', 'place', 'other', 'closedness', 'frontness', 'roundedness', 'balance']:
+        value = list_of_parameters[best][parameter]
+        deviation = 10*variance/score
+        result[parameter] = [value, deviation]
+    # for parameter in ['manner','place','other','closedness','frontness','roundedness']:
+    #     values = [list_of_parameters[i][parameter] for i in range(n_parameters)]
+    #     nb_values = 0
+    #     total_value = 0
+    #     var = 0
+    #     for i in range(n_sample):
+    #         if ratings[i]:
+    #             var += values[ratings[i]]**2
+    #             total_value += values[ratings[i]]
+    #             nb_values += 1
+    #     if nb_values > 0:
+    #         mean = total_value / nb_values
+    #         var = sqrt(var / nb_values - mean ** 2)
+    #         result[parameter] = [mean, var]
+
     record(result)
     return closest_given(n_parameters,result)
+
+
+def get_best_set(ratings):
+    """
+
+    :param ratings: a list of indexes : [0,1,0,,2,4,2,0,0,,0]
+    :return: the index present the most (0), its number of occurrences (5), the number of others (4)
+    """
+    n = max(ratings)+1
+    scores = [0 for i in range(n)]
+    for i in range(len(ratings)):
+        if ratings[i] > -1: # we check if a parameter has been chosen for this instance
+            scores[ratings[i]] += 1
+    best = None
+    score = -1
+    var = 0
+    for i in range(n):
+        if scores[i] > score:
+            score = scores[i]
+            best = i
+        var += scores[i]
+    return best, score, var-score
 
 
 def get_random(number, possible):
@@ -114,14 +144,15 @@ def random_parameters():
     """
     Returns a random set of parameters (between 0 and 50)
     """
-    random_values = [50*random.random() for i in range(6)]
+    random_values = [50*random.random() for i in range(7)]
     return {
         'manner': random_values[0],
         'place': random_values[1],
         'other': random_values[2],
         'closedness': random_values[3],
         'frontness': random_values[4],
-        'roundedness': random_values[5]
+        'roundedness': random_values[5],
+        'balance': random_values[6]
     }
 
 
