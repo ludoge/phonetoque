@@ -183,7 +183,7 @@ def add_word(language):
     return "The word {} has been added to the {} database".format(spelling, language)
 
 
-@app.route('/<language>_syllables/', defaults={'ipa_syllable': ''}, methods = ['GET', 'POST']) #pour avoir toutes les syllabes dans une langue
+@app.route('/<language>_syllables/', defaults={'ipa_syllable': ''}, methods = ['GET']) #pour avoir toutes les syllabes dans une langue
 @app.route('/<language>_syllables/<path:ipa_syllable>', methods=['GET', 'POST']) #pour avoir des details sur une syllabe
 @app.route('/<language>_syllables/<path:ipa_syllable>', methods=['PATCH']) #pour rajouter des attributs en plus sur une syllabe
 def get_all_syllables(language, ipa_syllable):
@@ -252,8 +252,12 @@ def add_syllables(language):
     #     raise ValueError('word entered in wrong language')
     ipa_syllable = data['ipa_syllable']
     orthographical_syllable = data['orthographical_syllable']
-    preceding_ipa_syllable = data['preceding_ipa_syllable']
-    following_ipa_syllable = data['following_ipa_syllable']
+    try:
+        preceding_ipa_syllable = data['preceding_ipa_syllable']
+        following_ipa_syllable = data['following_ipa_syllable']
+    except KeyError:
+        preceding_ipa_syllable = ""
+        following_ipa_syllable = ""
     db_insert = {'ipa_syllable': ipa_syllable, 'orthographical_syllable': orthographical_syllable, 'preceding_ipa_syllable':preceding_ipa_syllable, 'following_ipa_syllable': following_ipa_syllable}
     all_syllables.insert(db_insert)
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
