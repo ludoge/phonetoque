@@ -42,6 +42,7 @@ def translitterate():
         syllables = []
         syllables_ipa2 = []
         translitteration_score = []
+        print('I saw you', syllables_ipa1)
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
@@ -49,14 +50,27 @@ def translitterate():
                 # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
                 syll1 = response[language2]
                 score = response[f'{language2}_score']
+                if score < 0.5: # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
+                    raise KeyError
                 syllables_ipa2 += [syll1]
                 translitteration_score += [score]
                 # syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
                 syll2 = json.loads(get_all_syllables(language2, syll1))['result']['orthographical_syllable']
                 syllables += [syll2]
             except (KeyError, TypeError):
-                syllables_ipa2 += ["~"]
-                syllables += ["~"]
+                syll1 = ""
+                syll2 = ""
+                for phonem in syll:
+                    try:
+                        item = json.loads(get_phonem(language1,phonem))['result']
+                        equivalent = item[language2]
+                        writing = json.loads(get_phonem(language2,equivalent))['result']['written']
+                        syll1 += phonem
+                        syll2 += writing
+                    except (KeyError, TypeError):
+                        continue
+                syllables_ipa2 += [syll1]
+                syllables += [syll2]
                 translitteration_score += [0.001]
         harmonic_mean = int(100*round(stats.hmean(translitteration_score),2))
         return dumps({'post':True, 'spelling': spelling, 'syllables': syllables, 'language1' : language1, 'language2': language2, 'word_syllables':word['syllables'], 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2, 'harmonic_mean': harmonic_mean})    
@@ -259,6 +273,54 @@ def add_syllables(language):
     return "The syllable {} has been added to the {} syllable database".format(ipa_syllable, language)
 
 
+@app.route('/phonems/<language>/', defaults={'phonem': ''}, methods=['GET', 'POST'])
+@app.route('/phonems/<language>/<phonem>/', methods=['GET', 'POST'])
+@app.route('/phonems/<language>/<phonem>/', methods=['PATCH'])
+def get_phonem(language, phonem):
+    # on va selectionner la table selon la langue choisie
+    all_phonems = mongo.db.phonems
+    if request.method != "PATCH":
+        if phonem == "":
+            output = []
+            result = all_phonems.find({'language':language})
+            for phonem in result:
+                del phonem['_id'] # the value of this key is an ObjectId which is not JSON serializable
+                output.append(phonem)
+            return dumps({'result': output})
+        else:
+            result = all_phonems.find_one({'language': language,'phonem': phonem})
+            if result:
+                del result['_id']  # the value of this key is an ObjectId which is not JSON serializable
+                output = result
+            else:
+                output = 'This phonem is not in our database'
+            return dumps({'result': output})
+    elif request.method == "PATCH":
+        data = request.get_json()
+        all_phonems.update_one({"language":language,"phonem": phonem}, {'$set': data})
+        return "A new attribute {} has been added to the phonem {}".format(data, phonem)
+
+
+@app.route('/phonems/<language>/', methods=['POST'])
+def add_phonem(language):
+    """
+    to add new phonems
+    """
+    all_phonems = mongo.db.phonems.find({'language':language})
+    data = request.get_json()
+    phonem = data['phonem']
+    written = data['written']
+    db_insert = {'language': language, 'phonem': phonem, 'written': written}
+    for lang in ['french', 'english', 'italian']:
+        try:
+            db_insert[lang] = data[lang]
+        except KeyError:
+            pass
+    all_phonems.insert(db_insert)
+    return "The phonem {} has been added in {} to the phonem database".format(phonem, language)
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=5001)
     #app.run(debug=True, host='0.0.0.0')
+
