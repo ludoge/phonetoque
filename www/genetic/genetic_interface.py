@@ -24,11 +24,13 @@ Third convergence : manner: 11,25		place : 11,47	other : 10,22
                     closedness: 10,68	frontness : 13,56	roundedness : 2,81
 """
 
-
+parameters_to_train = ['manner', 'place', 'other', 'closedness', 'frontness', 'roundedness', 'balance']
 default_parameters = {}
 # we can use this to reinput the already calculated result from choice
 # in case we restart the program
 
+
+# ------------------ Routes for the interface ------------------ #
 @app.route('/')
 def index():
     return '<a href="/closest/given/4"> Get started </a>'
@@ -66,10 +68,12 @@ def closest_given(number=3, parameters=default_parameters):
 def choice():
     if request.method == 'GET':
         return redirect('/closest/random/')
+
     data = request.form
     n_sample = int(data['n_sample'])
     n_parameters = int(data['n_parameters'])
     list_of_parameters = json.loads(data['list_of_parameters'].replace("'", '"'))
+
     ratings = []
     for i in range(int(n_sample)):
         try:
@@ -80,32 +84,18 @@ def choice():
     best, score, variance = get_best_set(ratings)
 
     result = {}
-    for parameter in ['manner', 'place', 'other', 'closedness', 'frontness', 'roundedness', 'balance']:
+    for parameter in parameters_to_train:
         value = list_of_parameters[best][parameter]
-        deviation = 10*variance/score
+        deviation = 1+10*variance/score
         result[parameter] = [value, deviation]
-    # for parameter in ['manner','place','other','closedness','frontness','roundedness']:
-    #     values = [list_of_parameters[i][parameter] for i in range(n_parameters)]
-    #     nb_values = 0
-    #     total_value = 0
-    #     var = 0
-    #     for i in range(n_sample):
-    #         if ratings[i]:
-    #             var += values[ratings[i]]**2
-    #             total_value += values[ratings[i]]
-    #             nb_values += 1
-    #     if nb_values > 0:
-    #         mean = total_value / nb_values
-    #         var = sqrt(var / nb_values - mean ** 2)
-    #         result[parameter] = [mean, var]
 
     record(result)
     return closest_given(n_parameters,result)
 
 
+# ------------------         Genetics         ------------------ #
 def get_best_set(ratings):
     """
-
     :param ratings: a list of indexes : [0,1,0,,2,4,2,0,0,,0]
     :return: the index present the most (0), its number of occurrences (5), the number of others (4)
     """
@@ -125,37 +115,6 @@ def get_best_set(ratings):
     return best, score, var-score
 
 
-def get_random(number, possible):
-    """
-    :param number: length of the returned list
-    :param possible: list of possible items
-    :return: a list of random items of "possible"
-    """
-    result = []
-    length = len(possible)
-    for i in range(number):
-        rand = random.randint(0,length)
-        if possible[rand] not in result:
-            result.append(possible[rand])
-    return result
-
-
-def random_parameters():
-    """
-    Returns a random set of parameters (between 0 and 50)
-    """
-    random_values = [50*random.random() for i in range(7)]
-    return {
-        'manner': random_values[0],
-        'place': random_values[1],
-        'other': random_values[2],
-        'closedness': random_values[3],
-        'frontness': random_values[4],
-        'roundedness': random_values[5],
-        'balance': random_values[6]
-    }
-
-
 def genetic_parameters(number, data):
     """
     :param number: number of child given the genetic parent data
@@ -173,6 +132,22 @@ def genetic_parameters(number, data):
                 set[parameter] = data[parameter][0]
         result.append(set)
     return result
+
+
+def converged(parameters):
+    # returns the percentage of convergence for the result of choice
+    deviations = 0
+    for key in parameters.keys():
+        deviations += parameters[key][1]
+    return round(100*exp(-deviations/12),2)
+
+
+# ------------------     Data generation      ------------------ #
+def random_parameters():
+    """
+    Returns a random set of parameters (between 0 and 50)
+    """
+    return {parameter: 50*random.random() for parameter in parameters_to_train}
 
 
 def get_useful_sample(number, possible_sample, possible_matches, list_of_parameters):
@@ -242,6 +217,7 @@ def match_one_w_many_parameters(syllable,possible,list_of_parameters):
     return list_of_matched, list_of_scores
 
 
+# ------------------   Auxiliary functions    ------------------ #
 def non_trivial(liste):
     """
     Checks if there is at least two different elements in the list
@@ -259,12 +235,19 @@ def non_trivial(liste):
     return False
 
 
-def converged(parameters):
-    # returns the percentage of convergence for the result of choice
-    deviations = 0
-    for key in parameters.keys():
-        deviations += parameters[key][1]
-    return round(100*exp(-deviations/12),2)
+def get_random(number, possible):
+    """
+    :param number: length of the returned list
+    :param possible: list of possible items
+    :return: a list of random items of "possible"
+    """
+    result = []
+    length = len(possible)
+    for i in range(number):
+        rand = random.randint(0,length)
+        if possible[rand] not in result:
+            result.append(possible[rand])
+    return result
 
 
 def record(result,file='parameters_score.txt'):
@@ -275,6 +258,7 @@ def record(result,file='parameters_score.txt'):
             record.write(f'{parameter} : {value} (+/- {deviation})   ')
         convergence = str(converged(result))+'%'
         record.write('\nConvergence : '+convergence+'\n')
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

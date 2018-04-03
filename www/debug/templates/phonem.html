@@ -1,0 +1,28 @@
+{% extends "template.html" %}
+
+{% block titre %} {{phonem.phonem}} {% endblock %}
+
+{% block corps %}
+
+    <p> Modifier l'écriture du phonème "{{phonem.phonem}}" dans la langue "{{phonem.language}}" : </p>
+    {% set url = '/phonem/'+phonem.language+'/'+phonem.phonem+'/' %}
+    <form action="{{url}}" method="post" id="mod_phonem">
+        <p> Spelling : <input type="text" name="written" value={{phonem.written}} /> </p>
+        <p> <input type="submit" value="Enregistrer" /> </p>
+    </form>
+    <p class="top-buffer"> Exemples de mots dans lesquels {{phonem.phonem}} apparaît </p>
+    <table>
+
+        <tr>
+        <th> Mot </th>
+        <th> IPA </th>
+        </tr>
+        {% for i in range(number_of_examples) %}
+            <tr>
+                <td style="width:100px"> {{words[i]}} </td>
+                <td style="width:100px"> {{phonetics[i]}} </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

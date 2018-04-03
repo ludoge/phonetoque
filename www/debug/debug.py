@@ -6,6 +6,7 @@ import json
 from json import *
 from scipy import stats
 from src.sequence_statistics import generate_sentence
+from src.closest_sound import example_of_sound
 
 app = Flask(__name__)
 
@@ -119,6 +120,28 @@ def generate_words(language='french'):
         return render_template('generate_words.html',words=words, phonems=phonems, language=language)
     except:
         return redirect('/generate_words/'+language)
+
+
+@app.route('/phonems/', defaults={'language': 'english'}, methods=['GET', 'POST'])
+@app.route('/phonems/<language>/', methods=['GET'])
+def phonems(language):
+    if request.method == 'POST':
+        language = request.form['language']
+    all_phonems = requests.get(f"{API_URL}/phonems/{language}").json()['result']
+    return render_template('phonems.html',language=language,all_phonems=all_phonems)
+
+
+@app.route('/phonem/<language>/<phonem>/', methods=['GET', 'POST'])
+def phonem(language,phonem):
+    if request.method == 'GET':
+        item = requests.get(f"{API_URL}/phonems/{language}/{phonem}/").json()['result']
+        number_of_examples = 4
+        words, phonetics = example_of_sound(phonem, language, number_of_examples)
+        return render_template('phonem.html',phonem=item,words=words,phonetics=phonetics, number_of_examples=number_of_examples)
+    else:
+        patch = {'written': request.form['written']}
+        requests.patch(f"{API_URL}/phonems/{language}/{phonem}/", headers={'Content-Type': 'application/json'}, data=json.dumps(patch))
+    return redirect(f'/phonems/{language}')
 
 
 if __name__ == '__main__':

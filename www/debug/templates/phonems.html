@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+
+{% block titre %} Phonems {% endblock %}
+
+{% block corps %}
+    <h1>
+        Phonems in {{language}}
+    </h1>
+    <table>
+
+        <tr>
+        <th> Phonem </th>
+        <th> Writing </th>
+        <th> Modifier </th>
+        <th> Supprimer </th>
+        </tr>
+        {% for phonem in all_phonems %}
+            <tr>
+                <td style="width:100px"> {{phonem.phonem}} </td>
+                <td style="width:100px"> {{phonem.written}} </td>
+                <td style="width:100px">{% set url1 = '/phonem/'+language+'/'+phonem.phonem %}
+                    <a type="button" href="{{url1}}" > <span class="glyphicon glyphicon-pencil"></span> </a></td>
+                <td style="width:50px">{% set url2 = '/phonem_delete/'+language+'/'+phonem.phonem %}
+                    <a type="button" href="{{url2}}"> <span class="glyphicon glyphicon-trash"></span> </a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
