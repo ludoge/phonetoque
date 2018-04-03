@@ -13,7 +13,7 @@ abandonner a-bɑ̃-dɔ-ne
 abandonnés a-bɑ̃-dɔ-ne
 abasie a-ba-zi
 abasourdi a-ba-zuʁ-di
-abasourdir ba-zuʁ-diʁ
+abasourdir a-ba-zuʁ-diʁ
 abasourdissement a-ba-zuʁ-dis-mɑ̃
 abat-jour a-ba-ʒuʁ
 abats a-ba
@@ -1926,8 +1926,8 @@ audace o-das
 audacieuse ɔ-da-sjøz
 audacieux o-da-sjø
 au-dehors o-də-ɔʁ
-au-dessous o də-su
-au-dessus o də-sy
+au-dessous o-də-su
+au-dessus o-də-sy
 audience o-djɑ̃s
 audiovisuel ɔ-djɔ-vi-zɥɛl
 audiovisuelle ɔ-djɔ-vi-zɥɛl
@@ -3915,7 +3915,7 @@ chéri ʃe-ʁi
 chérir ʃe-ʁiʁ
 chers ʃɛʁ
 chétif ʃe-tif
-cheval u
+cheval ʃə-val
 chevalet ʃə-va-lɛ
 chevalier ʃə-va-lje
 chevaux ʃə-val
