@@ -28,40 +28,54 @@ class PhonetoqueRequest(object):
         Syllabifies words and pronunciations
         :return:
         """
-        self.pronunciations = {self.hyphenation_dict.inserted(k).strip():
+        self.pronunciations = {self.hyphenation_dict.inserted(k.replace(' ', '-')).strip():
                                # [self.ipa_hyphenation_dict.inserted(x).strip() for x in v]
                                    v
                                for k, v in self.pronunciations.items()}
 
     def get_ipa_syllabification(self, word):
         """
-    
+        Obsolete
         """
         # syllabed_word = self.ipa_hyphenation_dict.inserted(word)
         return word
 
     def post_word_to_db(self, word):
+        """
+        Also contains pre-treatment to get number of phonetic and orthographic syllables
+        :param word:
+        :return:
+        """
         for pronunciation in self.pronunciations[word]:
             spelling = word.replace("-", "").lower()
-            syllables = [x for x in word.split("-") if x != '']
+            syllables = [x.lower() for x in word.split("-") if x != '']
             spelling_ipa = pronunciation.replace("-", "")
             syllables_ipa = [x for x in pronunciation.split("-") if x != '']
 
+            if len(spelling) > 2 and (
+                            len(syllables[0]) > 2 or len(syllables) < len(
+                        syllables_ipa)) and len(syllables_ipa[0])==1:  # initial vowel is often a syllable by itself
+                if len(syllables[0]) > len(syllables_ipa[0]):
+                    if spelling[0] in 'aeiou' and spelling[1] in 'aeiouy' and len(syllables) <= len(syllables_ipa):
+                        syllables = [syllables[0][:2], syllables[0][2:]] + syllables[2:]
+                    elif spelling[0] in 'aeiou' and len(syllables) <= len(syllables_ipa):
+                        syllables = [syllables[0][0], syllables[0][1:]] + syllables[1:]
 
-            if self.language == 'french': # handles mute 'e' at the end
-                if spelling[-1] == 'e' and len(syllables) == len(syllables_ipa) + 1 and len(syllables) >= 2:
-                    syllables = syllables[:-2] + [syllables[-2] + syllables[-1]]
-
-            if self.language == 'english' and len(spelling)>2: # initial vowel is often a syllable by itself
-                if spelling[0] in 'aeiou' and spelling[2] in 'aeiou' and len(syllables) < len(syllables_ipa):
-                    syllables = [syllables[0][0] , syllables[0][1:]] + syllables[1:]
-                if spelling[0] in 'aeiou' and spelling[2] not in 'aeiou' and len(syllables) < len(syllables_ipa):
-                    syllables = [syllables[0][:2] , syllables[0][2:]] + syllables[1:]
-                    if '' in syllables:
-                        syllables.remove('')
+            if 'e' in spelling and self.language == 'french' and len(syllables) > len(syllables_ipa) and len(
+                    syllables) >= 2:
+                syll = []
+                for i in range(len(syllables)):
+                    if syllables[i][-1] == 'e' and i >= 1:
+                        previous_syll = syll[-1]
+                        syll = syll[:-1]
+                        syll.append(previous_syll + syllables[i])
+                    else:
+                        syll.append(syllables[i])
+                syllables = syll
 
             # if the specific fixes above fail, map phonetic syllabification onto orthographical one
-            if len(spelling)==len(spelling_ipa) and len(syllables) != len(syllables_ipa):
+            if (len(spelling) == len(spelling_ipa) or len(spelling) == len(spelling_ipa) + 1) and len(syllables) != len(
+                    syllables_ipa):
                 lengths = [len(x) for x in syllables_ipa]
                 sts = spelling[:]
                 syllables = []
@@ -69,6 +83,26 @@ class PhonetoqueRequest(object):
                     syllables += [sts[:lengths[0]]]
                     sts = sts[lengths[0]:]
                     lengths = lengths[1:]
+
+            if '' in syllables:
+                syllables.remove('')
+
+            # removes double consonants from syllable ends, except for Italian, and handling "cc" exceptions
+
+            if self.language not in ['italian', 'finnish']:
+                for i in range(len(syllables) - 1):
+                    if ((syllables[i][-1] == syllables[i + 1][0]) or (
+                            syllables[i][-1] == 'c' and syllables[i + 1][0] == 'q')) and len(syllables[i]) > 0:
+                        if len(syllables_ipa) > i: #sanity check
+                            if not (syllables_ipa[i][-1] == 'k' and syllables_ipa[i + 1][0] == 's'):  # cc
+                                if not syllables[i][-1] in 'aeiou': # Aaron !
+                                    syllables[i] = syllables[i][:-1]
+
+            if '' in syllables:
+                syllables.remove('')
+
+            print(syllables_ipa)
+            print(syllables)
 
             payload = {
                 "language": self.language,
@@ -82,6 +116,10 @@ class PhonetoqueRequest(object):
             logging.info(response.text)
 
     def post_all_words(self):
+        """
+        Self-explanatory
+        :return:
+        """
         for word in self.pronunciations:
             self.post_word_to_db(word)
 
@@ -141,6 +179,10 @@ class PhonetoqueRequest(object):
             self.all_syllables_ipa[ipa_syllable] = max_orth_syllable
 
     def get_similar_syllables(self):
+        """
+        /!\ this also patches, not just gets
+        :return:
+        """
         req = requests.get(self.all_syllables_route)
         dico = json.loads(req.content)
         language_syllables = dico['result']

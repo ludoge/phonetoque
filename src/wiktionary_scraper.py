@@ -105,7 +105,7 @@ class Scraper(object):
             pronunciation = soup.find('span', class_="IPA").text
 
             # regex = re.compile('^[/\[\\].*[/\\\]]$')
-            pronunciation = "/" + pronunciation.replace("\\", "") + "/"
+            pronunciation = pronunciation.replace("\\", "").replace('/', '')
             self.pronunciations[word] = [pronunciation]
 
         except AttributeError:
@@ -146,6 +146,13 @@ class Scraper(object):
                 os.rename(filename, filename + ".previous")
             except:
                 pass
+
+        if already_fetched:
+            resume_from = already_fetched[-1]
+
+        if resume_from:
+            index = self.word_list.index(resume_from)
+            self.word_list = self.word_list[index:]
 
         new_words = [x for x in self.word_list if x not in already_fetched]
 
