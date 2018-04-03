@@ -1,3 +1,5 @@
+
+
 from flask import Flask, request, jsonify, make_response
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -42,7 +44,7 @@ def translitterate():
         syllables = []
         syllables_ipa2 = []
         translitteration_score = []
-        print('I saw you', syllables_ipa1)
+        #print('I saw you', syllables_ipa1)
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
