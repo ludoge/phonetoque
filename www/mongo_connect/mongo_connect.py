@@ -57,7 +57,6 @@ def translitterate():
              'syllables1': syllables1, 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2,
              'harmonic_mean': harmonic_mean})
 
-
 def transliterate_one_word(word,language1,language2):
     # on récupère la prononciation du mot
     response = json.loads(get_all_words(language1, word))['result']
@@ -351,4 +350,3 @@ def add_phonem(language):
 if __name__ == '__main__':
     #app.run(debug=True, host='127.0.0.1', port=5001)
     app.run(debug=True, host='0.0.0.0')
-
