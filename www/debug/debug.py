@@ -11,8 +11,8 @@ from src.sequence_statistics import generate_sentence
 
 app = Flask(__name__)
 
-API_URL = 'http://api:5000'
-# API_URL = 'http://127.0.0.1:5001'
+#API_URL = 'http://api:5000'
+API_URL = 'http://127.0.0.1:5001'
 
 app.config['JSON_AS_ASCII'] = False
 
@@ -143,6 +143,12 @@ def phonem(language,phonem):
     else:
         patch = {'written': request.form['written']}
         requests.patch(f"{API_URL}/phonems/{language}/{phonem}/", headers={'Content-Type': 'application/json'}, data=json.dumps(patch))
+    return redirect(f'/phonems/{language}')
+
+
+@app.route('/phonem_delete/<language>/<phonem>/')
+def delete_phonem(language,phonem):
+    requests.get(f"{API_URL}/delete_phonem/{language}/{phonem}")
     return redirect(f'/phonems/{language}')
 
 
