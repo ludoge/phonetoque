@@ -55,9 +55,10 @@ stop:
   ʈ 
   ɖ 
   c 
-  ɟ 
+  ɟ
   k 
-  ɡ 
+  ɡ
+  g
   q 
   ɢ   
   ʡ   
@@ -155,6 +156,7 @@ lateral_approximant:
   ʟ̥  
   ʟ   
   ʟ̠
+  ɫ
 
 lateral_flap:
   ɺ     
@@ -212,6 +214,7 @@ alveolar:
   l̥  
   l 
   ɺ
+  ɫ
 
 dental:
   t
@@ -264,6 +267,7 @@ velar:
   ŋ
   k 
   ɡ
+  g
   x 
   ɣ 
   ɰ̊  
@@ -272,7 +276,8 @@ velar:
   ʟ̝
   ʟ̥  
   ʟ
-  ʟ̆  
+  ʟ̆
+  ɫ
 
 uvular:
   ɴ 
@@ -368,7 +373,8 @@ voiced:
   d   
   ɖ 
   ɟ 
-  ɡ 
+  ɡ
+  g
   ɢ
   z 
   ʒ 
@@ -416,7 +422,8 @@ voiced:
   ɺ 
   ɺ̢  
   ʎ̮  
-  ʟ̆ 
+  ʟ̆
+  ɫ
 
 r_sound:
   χ
