@@ -17,10 +17,12 @@ vowels:
 hyphenation_dict:
   english: en
   french: fr
+  italian: it
 
 ipa_hyphenation_dict:
   english: ipa_en
   french: ipa_fr
+  italian: it
 
 server_url:
   http://127.0.0.1:5001
@@ -85,3 +87,35 @@ simplifying:
 
   french:
     a: a
+
+
+  italian:
+    '‧': ''
+    '̪': ''
+    ',': ''
+    '̃': ''
+    'ɾ': 'r'
+    ':': ''
+    '\': ''
+    'ε': 'ɛ'
+    'ʤʤ': 'dʒ'
+    'ʤ': 'dʒ'
+    'ʧʧ': 'tʃ'
+    'ʧ': 'tʃ'
+    "\"": ''
+    '\u200b': ''
+    'ˌ': ''
+    'ʦʦ': 'ts'
+    'ʦ': 'ts'
+    'ʣʣ': 'dz'
+    'ʣ': 'dz'
+    '͡': ''
+    'ä': 'a'
+    '̯': ''
+    'ʷ': ''
+    'g': 'ɡ'
+    'q': 'k'
+    'c': 'k'
+    'ʎʎ': 'ʎ'
+    'ɲɲ': 'ɲ'
+    'ʃʃ': 'ʃ'

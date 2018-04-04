@@ -52,7 +52,7 @@ def translitterate():
                 # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
                 syll1 = response[language2]
                 score = response[f'{language2}_score']
-                if score < 0.5: # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
+                if score < 0.8: # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
                     raise KeyError
                 syllables_ipa2 += [syll1]
                 translitteration_score += [score]
