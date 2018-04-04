@@ -338,7 +338,7 @@ def add_phonem(language):
     """
     to add new phonems
     """
-    all_phonems = mongo.db.phonems.find({'language':language})
+    all_phonems = mongo.db.phonems
     data = request.get_json()
     phonem = data['phonem']
     written = data['written']
