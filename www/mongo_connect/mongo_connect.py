@@ -32,46 +32,76 @@ def translitterate():
         language2 = content['language2']
         if language1 == language2:
             return dumps({'post':False, 'message': u'Entrez deux langages différents pour la translittération !'})
-            # on récupère la prononciation du mot
-        response = json.loads(get_all_words(language1, spelling))['result']
-        if response == []:
-            return dumps({'post':False, 'message':u"Ce mot n'est pas répertorié !"})
-        word = response[0]
-        syllables_ipa1 = word['syllables_ipa']
-        syllables = []
+        # on sépare la phrase en mots
+        words = spelling.split(' ')
+        syllables1 = []
+        syllables2 = []
+        syllables_ipa1 = []
         syllables_ipa2 = []
-        translitteration_score = []
-        for syll in syllables_ipa1:
-            try:
-                # on cherche la correspondance de chaque syllabe dans la 2eme langue
-                response = json.loads(get_all_syllables(language1, syll))['result']
-                # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
-                syll1 = response[language2]
-                score = response[f'{language2}_score']
-                if score < 0.5: # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
-                    raise KeyError
-                syllables_ipa2 += [syll1]
-                translitteration_score += [score]
-                # syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
-                syll2 = json.loads(get_all_syllables(language2, syll1))['result']['orthographical_syllable']
-                syllables += [syll2]
-            except (KeyError, TypeError):
-                syll1 = ""
-                syll2 = ""
-                for phonem in syll:
-                    try:
-                        item = json.loads(get_phonem(language1,phonem))['result']
-                        equivalent = item[language2]
-                        writing = json.loads(get_phonem(language2,equivalent))['result']['written']
-                        syll1 += phonem
-                        syll2 += writing
-                    except (KeyError, TypeError):
-                        continue
-                syllables_ipa2 += [syll1]
-                syllables += [syll2]
-                translitteration_score += [0.001]
-        harmonic_mean = int(100*round(stats.hmean(translitteration_score),2))
-        return dumps({'post':True, 'spelling': spelling, 'syllables': syllables, 'language1' : language1, 'language2': language2, 'word_syllables':word['syllables'], 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2, 'harmonic_mean': harmonic_mean})    
+        harmonic_sum = 0
+        number_of_words = len(words)
+        for word in words:
+            result = transliterate_one_word(word,language1,language2)
+            if not result:
+                syllables1 += "#"
+                syllables2 += "#"
+                syllables_ipa1 += "#"
+                syllables_ipa2 += "#"
+            else:
+                syllables1 += result[0]
+                syllables2 += result[1]
+                syllables_ipa1 += result[2]
+                syllables_ipa2 += result[3]
+                harmonic_sum += result[4]
+        harmonic_mean = harmonic_sum/number_of_words
+        return dumps(
+            {'post': True, 'spelling': spelling, 'syllables2': syllables2, 'language1': language1, 'language2': language2,
+             'syllables1': syllables1, 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2,
+             'harmonic_mean': harmonic_mean})
+
+
+def transliterate_one_word(word,language1,language2):
+    # on récupère la prononciation du mot
+    response = json.loads(get_all_words(language1, word))['result']
+    if response == []:
+        return False
+    word = response[0]
+    syllables_ipa1 = word['syllables_ipa']
+    syllables2 = []
+    syllables_ipa2 = []
+    translitteration_score = []
+    for syll in syllables_ipa1:
+        try:
+            # on cherche la correspondance de chaque syllabe dans la 2eme langue
+            response = json.loads(get_all_syllables(language1, syll))['result']
+            # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
+            syll1 = response[language2]
+            score = response[f'{language2}_score']
+            if score < 1:  # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
+                raise KeyError
+            syllables_ipa2 += [syll1]
+            translitteration_score += [score]
+            # syll2 = requests.get(f'{API_URL}/{language2}_syllables/{syll1}').json()['result']['orthographical_syllable']
+            syll2 = json.loads(get_all_syllables(language2, syll1))['result']['orthographical_syllable']
+            syllables2 += [syll2]
+        except (KeyError, TypeError):
+            syll1 = ""
+            syll2 = ""
+            for phonem in syll:
+                try:
+                    item = json.loads(get_phonem(language1, phonem))['result']
+                    equivalent = item[language2]
+                    writing = json.loads(get_phonem(language2, equivalent))['result']['written']
+                    syll1 += phonem
+                    syll2 += writing
+                except (KeyError, TypeError):
+                    continue
+            syllables_ipa2 += [syll1]
+            syllables2 += [syll2]
+            translitteration_score += [0.001]
+    harmonic_mean = int(100 * round(stats.hmean(translitteration_score), 2))
+    return word["syllables"],syllables2, syllables_ipa1, syllables_ipa2, harmonic_mean
+
 
 @app.route('/<language>_id/<id>', methods= ['GET'])
 def get_by_id(language, id):

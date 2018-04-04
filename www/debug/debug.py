@@ -95,13 +95,14 @@ def translitterate():
             return render_template('translitteration.html',post=post, message = message)
         else:
             word = response['spelling']
-            syllables = response['syllables']
+            syllables1 = response['syllables1']
+            syllables2 = response['syllables2']
             language1 = response['language1']
             language2 = response['language2']
             syllables_ipa1 = response['syllables_ipa1']
             syllables_ipa2 = response['syllables_ipa2']
             harmonic_mean = response['harmonic_mean']
-            return render_template('translitteration.html',post=post,word=word,result=syllables,language1=language1,language2=language2,syllables=syllables,syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2, harmonic_mean=harmonic_mean)
+            return render_template('translitteration.html',post=post,word=word,result=syllables2,language1=language1,language2=language2,syllables=syllables1,syllables_ipa=syllables_ipa1,syllables_ipa2=syllables_ipa2, harmonic_mean=harmonic_mean)
 
 
 @app.route('/delete/<language>/<id>/')
@@ -119,7 +120,7 @@ def generate_words(language='french'):
         words, phonems = generate_sentence(language,[3,8,7,6,2,9,4,3,5])
         return render_template('generate_words.html',words=words, phonems=phonems, language=language)
     except:
-        return redirect('/generate_words/'+language)
+        return f'<a href="/generate_words/{language}"> Réessayer </a>'
 
 
 @app.route('/phonems/', defaults={'language': 'english'}, methods=['GET', 'POST'])
