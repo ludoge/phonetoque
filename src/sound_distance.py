@@ -148,8 +148,8 @@ class SoundDistance(object):
                 :return:
                 """
                 if n > 1 and i < n:
-                    a = (1-alpha)/((n)**4)
-                    return alpha + a*((i+1)**4)
+                    a = (1-alpha)/((n))
+                    return alpha + a*((i+1))
                 else:
                     return 1
             similarities = [self._aux_cluster_similarity(sounds1[:i]+sounds1[i+1:], sounds2)*_decay(i,n) for i in range(n)]
@@ -171,10 +171,10 @@ class SoundDistance(object):
             return 0
 
     def syllable_similarity(self, s1, s2):
-        print(s1, s2)
+        #print(s1, s2)
         sounds1, sounds2 = self.detect_sounds(s1), self.detect_sounds(s2)
         clusters1, clusters2 = self.cluster_consonant_vowel(sounds1), self.cluster_consonant_vowel(sounds2)
-        print(clusters1, clusters2)
+        #print(clusters1, clusters2)
         res = 0
         adjustment = 1
         if len(clusters1) == len(clusters2) - 1:
@@ -200,7 +200,7 @@ class SoundDistance(object):
                     pass
                 weights.append(w)
                 results.append(w*(self._aux_cluster_similarity(clusters1[i], clusters2[i])))
-            print(results)
+            #print(results)
             res = adjustment*sum(results)/sum(weights)
             #res = adjustment*min(results)#*max(results)
             return res

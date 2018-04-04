@@ -56,9 +56,10 @@ class PhonetoqueRequest(object):
                             len(syllables[0]) > 2 or len(syllables) < len(
                         syllables_ipa)) and len(syllables_ipa[0])==1:  # initial vowel is often a syllable by itself
                 if len(syllables[0]) > len(syllables_ipa[0]):
-                    if spelling[0] in 'aeiou' and spelling[1] in 'aeiouy' and len(syllables) <= len(syllables_ipa):
+                    if spelling[0] in 'aeiouéêôâé' \
+                                      '' and spelling[1] in 'aeiouéêâôy' and len(syllables) <= len(syllables_ipa):
                         syllables = [syllables[0][:2], syllables[0][2:]] + syllables[2:]
-                    elif spelling[0] in 'aeiou' and len(syllables) <= len(syllables_ipa):
+                    elif spelling[0] in 'aeiouéâêô' and len(syllables) <= len(syllables_ipa):
                         syllables = [syllables[0][0], syllables[0][1:]] + syllables[1:]
 
             if 'e' in spelling and self.language == 'french' and len(syllables) > len(syllables_ipa) and len(

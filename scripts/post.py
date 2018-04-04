@@ -42,6 +42,6 @@ if __name__ == '__main__':
     print("got all syllables")
     request.get_max_syllables()
     print("got max syllables")
-    request.post_all_syllables()
+    #request.post_all_syllables()
 
-    #request.get_similar_syllables()
+    request.get_similar_syllables()
