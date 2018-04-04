@@ -81,6 +81,7 @@ def full_sounds(language):
         if isinstance(db_result, str):
            insert_in_db(language,sound,'#')
 
+
 def all_closest(language1,language2):
     """
     Fills the DB of phonem of language 1 with the closest equivalents in language 2
