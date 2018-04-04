@@ -2,8 +2,7 @@ import yaml
 import requests
 import json
 import logging
-from src import sound_distance as sd
-
+import src.sound_distance as sd
 
 API_URL = 'http://127.0.0.1:5001'
 

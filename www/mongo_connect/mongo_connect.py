@@ -12,8 +12,6 @@ app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
 app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
 app.config['JSON_AS_ASCII'] = False
 
-API_URL = 'http://127.0.0.1:5001'
-
 mongo = PyMongo(app)
 
 @app.route('/', methods = ['GET']) #pour avoir tous les mots dans une langue
@@ -77,7 +75,7 @@ def transliterate_one_word(word,language1,language2):
             # response = requests.get(f'{API_URL}/{language1}_syllables/{syll}').json()['result']
             syll1 = response[language2]
             score = response[f'{language2}_score']
-            if score < 1:  # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
+            if score < 0.8:  # on traite la syllabe autrement si elle n'a pas d'équivalent, score arbitraire
                 raise KeyError
             syllables_ipa2 += [syll1]
             translitteration_score += [score]
@@ -101,8 +99,6 @@ def transliterate_one_word(word,language1,language2):
             translitteration_score += [0.001]
     harmonic_mean = int(100 * round(stats.hmean(translitteration_score), 2))
     return word["syllables"],syllables2, syllables_ipa1, syllables_ipa2, harmonic_mean
-
-
 @app.route('/<language>_id/<id>', methods= ['GET'])
 def get_by_id(language, id):
     all_words = None
@@ -359,7 +355,6 @@ def add_phonem(language):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5001)
-    #app.run(debug=True, host='0.0.0.0')
-    #comment
+    #app.run(debug=True, host='127.0.0.1', port=5001)
+    app.run(debug=True, host='0.0.0.0')
 
