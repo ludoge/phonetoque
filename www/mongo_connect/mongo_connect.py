@@ -12,8 +12,6 @@ app.config['MONGO_DBNAME'] = 'phonetoque' #mettre le nom de la bd
 app.config['MONGO_URI'] = 'mongodb://joseph:password@ds135866.mlab.com:35866/phonetoque' #mettre le lien de la db avec username et password
 app.config['JSON_AS_ASCII'] = False
 
-API_URL = 'http://127.0.0.1:5001'
-
 mongo = PyMongo(app)
 
 @app.route('/', methods = ['GET']) #pour avoir tous les mots dans une langue
@@ -59,7 +57,6 @@ def translitterate():
              'syllables1': syllables1, 'syllables_ipa1': syllables_ipa1, 'syllables_ipa2': syllables_ipa2,
              'harmonic_mean': harmonic_mean})
 
-
 def transliterate_one_word(word,language1,language2):
     # on récupère la prononciation du mot
     response = json.loads(get_all_words(language1, word))['result']
@@ -101,8 +98,6 @@ def transliterate_one_word(word,language1,language2):
             translitteration_score += [0.001]
     harmonic_mean = int(100 * round(stats.hmean(translitteration_score), 2))
     return word["syllables"],syllables2, syllables_ipa1, syllables_ipa2, harmonic_mean
-
-
 @app.route('/<language>_id/<id>', methods= ['GET'])
 def get_by_id(language, id):
     all_words = None
@@ -338,7 +333,7 @@ def add_phonem(language):
     """
     to add new phonems
     """
-    all_phonems = mongo.db.phonems.find({'language':language})
+    all_phonems = mongo.db.phonems
     data = request.get_json()
     phonem = data['phonem']
     written = data['written']

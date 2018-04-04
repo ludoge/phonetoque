@@ -1,12 +1,13 @@
 ﻿# coding: utf-8
 
-from flask import Flask, request, render_template, redirect
-import requests
 import json
 from json import *
-from scipy import stats
-from src.sequence_statistics import generate_sentence
+
+import requests
+from flask import Flask, request, render_template, redirect
+
 from src.closest_sound import example_of_sound
+from src.sequence_statistics import generate_sentence
 
 app = Flask(__name__)
 
