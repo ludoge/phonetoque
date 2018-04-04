@@ -14,6 +14,8 @@ with open("all_syllables_en.yml", encoding="utf-8") as f_en:
     syllables_en = f_en.read().split()
 with open("all_syllables_fr.yml", encoding="utf-8") as f_fr:
     syllables_fr = f_fr.read().split()
+with open("all_syllables_it.yml", encoding="utf-8") as f_it:
+    syllables_it = f_it.read().split()
 
 """
 First convergence : manner : 9,26		place : 7,54	other : 3,42
@@ -51,15 +53,19 @@ def closest_given(number=3, parameters=default_parameters):
             list_of_parameters.append(random_parameters())
 
     # we get syllables that have different equivalents with a different set of parameters
-    sample_en, list_of_closest_en, list_of_scores_en = get_useful_sample(5,syllables_en,syllables_fr,list_of_parameters)
-    sample_fr, list_of_closest_fr, list_of_scores_fr = get_useful_sample(5,syllables_fr,syllables_en,list_of_parameters)
+    sample_en_fr, list_of_closest_en_fr, list_of_scores_en_fr = get_useful_sample(5,syllables_en,syllables_fr,list_of_parameters)
+    sample_fr_en, list_of_closest_fr_en, list_of_scores_fr_en = get_useful_sample(5,syllables_fr,syllables_en,list_of_parameters)
+    sample_en_it, list_of_closest_en_it, list_of_scores_en_it = get_useful_sample(5,syllables_en,syllables_it,list_of_parameters)
+    sample_fr_it, list_of_closest_fr_it, list_of_scores_fr_it = get_useful_sample(5,syllables_fr,syllables_it,list_of_parameters)
+    sample_it_fr, list_of_closest_it_fr, list_of_scores_it_fr = get_useful_sample(5,syllables_it,syllables_fr,list_of_parameters)
+    sample_it_en, list_of_closest_it_en, list_of_scores_it_en = get_useful_sample(5,syllables_it,syllables_en,list_of_parameters)
 
     return render_template('compare_useful.html',
-                           sample=sample_en + sample_fr,
-                           list_of_closest=list_of_closest_en + list_of_closest_fr,
-                           list_of_scores=list_of_scores_en + list_of_scores_fr,
+                           sample=sample_en_fr + sample_fr_en + sample_en_it + sample_fr_it + sample_it_en + sample_it_fr,
+                           list_of_closest=list_of_closest_en_fr + list_of_closest_fr_en + list_of_closest_en_it + list_of_closest_fr_it + list_of_closest_it_en + list_of_closest_it_fr,
+                           list_of_scores=list_of_scores_en_fr + list_of_scores_fr_en + list_of_scores_en_it + list_of_scores_fr_it + list_of_scores_it_en + list_of_scores_it_fr,
                            list_of_parameters=list_of_parameters,
-                           n_sample=len(sample_fr + sample_en),
+                           n_sample=len(sample_en_fr + sample_fr_en + sample_en_it + sample_fr_it + sample_it_en + sample_it_fr),
                            n_parameters=len(list_of_parameters)
                            )
 
@@ -244,7 +250,7 @@ def get_random(number, possible):
     result = []
     length = len(possible)
     for i in range(number):
-        rand = random.randint(0,length)
+        rand = random.randint(0,length-1)
         if possible[rand] not in result:
             result.append(possible[rand])
     return result

@@ -2570,7 +2570,6 @@ besogner bə-zɔ-ɲe
 besoin bə-zwɛ̃
 besoins bə-zwɛ̃
 Besson 
-best ɡʊd
 bestiaux bɛs-tjo
 bestiole bɛs-tjɔl
 bêta bɛ-ta
@@ -4441,7 +4440,7 @@ commissure kɔ-mi-syʁ
 commode kɔ-mɔd
 commodité kɔ-mɔ-di-te
 commodités kɔ-mɔ-di-te
-Commonwealth kɔ-mɔn-wɛls
+Commonwels kɔ-mɔn-wɛls
 commun kɔ-mœ̃
 communal kɔ-my-nal
 communautaire kɔ-my-no-tɛʁ
@@ -7461,7 +7460,6 @@ ecclésiastique e-kle-zjas-tik
 écus e-ky
 éden e-dɛn
 édenté e-dɑ̃-te
-EDF ə de ɛf
 Edgar ɛd-ɡaʁ
 édificateur e-di-fi-ka-tœʁ
 édification e-di-fi-ka-sjɔ̃
@@ -8471,6 +8469,7 @@ nord nɔʁ
 étudiés e-ty-dje
 étui e-tɥi
 eu ø
+euh ə
 eucharistie ø-ka-ʁis-ti
 Eugène ø-ʒɛn
 euphorie ø-fɔ-ʁi
@@ -10116,6 +10115,7 @@ gouvernements ɡu-vɛʁ-nə-mɑ̃
 gouverner ɡu-vɛʁ-ne
 gouverneur gu-vɛʁ-nœʁ
 gouverneurs ɡu-vɛʁ-nœʁ
+gnou nju
 grâce ɡʁɑs
 grâces ɡʁɑs
 gracier ɡʁa-sje
@@ -10408,7 +10408,6 @@ Harold hæɹ-əld
 harpe aʁp
 harpiste ar-pist
 Harry hæɹi
-has hæv
 hasard a-zaʁ
 hasardeux a-zaʁ-dø
 hasards ha-zaʁ
@@ -10635,7 +10634,7 @@ hourra hu-ʁa
 house aws
 housse us
 housses us
-Howard haʊ-əɹd
+Howard au-aʁd
 Hubert y-bɛʁ
 Hugo y-ɡo
 Hugues yɡ
@@ -13155,7 +13154,7 @@ matins ma-tɛ̃
 matité ma-ti-te
 matraque ma-tʁak
 matrice ma-tʁis
-matrimonial ma-tʁim-ɔn-jal
+matrimonial ma-tʁi-mɔ-njal
 maturité ma-ty-ʁi-te
 maudire mo-diʁ
 maudit mo-di
@@ -13313,7 +13312,7 @@ mènent mɛn
 mener mə-ne
 menés mə-ne
 meneur mə-nœʁ
-menotte ə
+menotte mə-nɔt
 menottes mə-nɔt
 mensonge mɑ̃-sɔ̃ʒ
 mensonger mɑ̃-sɔ̃-ʒe
@@ -14551,7 +14550,6 @@ on-dit ɔ̃-di
 ondoyer ɔ̃-dwa-je
 onduler ɔ̃-dy-le
 onduleux ɔ̃-dy-lø
-one wʌn
 onéreux ɔ-ne-ʁø
 ongle ɔ̃gl
 ongles ɔ̃ɡl
@@ -14750,12 +14748,13 @@ oubliée u-bli-je
 oublier u-bli-je
 oubliés u-bli-je
 oublions u-bli-jɔ̃
+oué we
 ouest wɛst
 Ouest wɛst
 ouf uf
 oui wi
 ouïe wi
-ouïes wi
+ouïes w
 ouïr wiʁ
 oukase u-kaz
 Oulan-Bator u-lan-ba-tɔʁ
@@ -16522,6 +16521,7 @@ procure pʁɔ-kyʁ
 procuré pʁɔ-ky-ʁe
 procurer pʁɔ-ky-ʁe
 procureur pʁɔ-ky-ʁœʁ
+prod pʁɔd
 prodigalité pʁɔ-di-ɡa-li-te
 prodige prɔ-diʒ
 prodigieux pʁɔ-di-ʒjø
@@ -20279,7 +20279,7 @@ tchécoslovaques tʃe-kɔ-slo-vak
 Tchécoslovaquie tʃe-kɔ-slo-va-ki
 tchèque tʃɛk
 tchèques tʃɛk
-Tchernobyl ʧɛʁ-nɔ-bil
+Tchernobyl tʃɛʁ-nɔ-bil
 te tə
 technicien tɛk-ni-sjɛ̃
 techniciens tɛk-ni-sjɛ̃
@@ -21369,7 +21369,6 @@ ventre vɑ̃tʁ
 ventrière vɑ̃-tʁi-jɛʁ
 ventrues vɑ̃-tʁy
 vents vɑ̃
-venture vɛnʧɚ
 venu və-ny
 venue və-ny
 venues və-ny

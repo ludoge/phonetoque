@@ -3170,7 +3170,7 @@ amyl æ-mɪl
 amylase æm-ɪ-leɪs
 amylases 
 amyls æ-mɪlz
-an h ən æn
+an æn
 ana 
 anabolic 
 anabolism 
@@ -3313,7 +3313,7 @@ ancientness
 ancients 
 ancillaries 
 ancillary æn-sə-leɹ-i
-and ɛnd ənd ɛnd ænd
+and ænd
 andante 
 andantes 
 andantino 
@@ -5190,7 +5190,7 @@ aryans
 aryls 
 arythmia 
 arythmic 
-as 
+as æz
 asafetida 
 asap 
 asbestic 
@@ -5671,7 +5671,7 @@ async
 asynchronous eɪ-sɪŋ-kɹən-əs
 asyndeta 
 asystematic 
-at ət æt
+at æt
 atavic 
 atavism æt-ə-vɪz-əm
 atavisms 
@@ -7936,7 +7936,7 @@ becalmed
 becalming 
 becalms 
 became bɪ-keɪm
-because bɪ-kɒz bi-kɔz bi-kʌz bə-kʌz bɪ-kəz
+because bi-kɔz bi-kʌz bə-kʌz bɪ-kəz
 bechamel 
 bechamels 
 beck 
@@ -9111,8 +9111,7 @@ billed bɪld
 biller 
 billers 
 billet bɪl-ɪt
-billeted 
-billeter bij-tɑ̃ bij-te bi-jɛt bi-jɛt bi-jɛt bij-tɔ̃ bij-te bi-jɛt bij-tɛ bij-tɛ bij-tɛ bi-jə-tjɔ̃ bi-jə-tje bij-tɛ bij-te bij-ta bij-ta bij-tam bij-tat bij-tɛʁ bi-jɛ-tʁe bi-jɛ-tʁa bi-jɛ-tʁa bi-jɛ-tʁɔ̃ bi-jɛ-tʁe bi-jɛ-tʁɔ̃ bi-jɛ-tʁɛ bi-jɛ-tʁɛ bi-jɛ-tʁɛ bi-jɛ-tə-ʁjɔ̃ bi-jɛ-tə-ʁje bi-jɛ-tʁɛ bi-jɛt bi-jɛt bi-jɛt bi-jə-tjɔ̃ bi-jə-tje bi-jɛt bij-tas bij-tas bij-ta bij-ta-sjɔ̃ bij-ta-sje bij-tas bi-jɛt bij-tɔ̃ bij-te
+billeted
 billeters 
 billeting 
 billets 
@@ -16820,7 +16819,7 @@ citrous
 citrus sɪ-tɹəs
 citruses 
 cittern 
-city sɪti sɪtɪ sɪti
+city sɪ-ti sɪ-tɪ sɪ-ti
 cityfied 
 cityward 
 citywide 
@@ -18412,7 +18411,7 @@ combustion kəm-bʌs-tʃən
 combustive 
 combustively 
 combusts 
-come sa ðu bɪst cʊmn hiər tə nɪm min ɔrs frə mi  dɛn kʌm kʌm kɐm kʌm
+come kʌm
 comeback kʌm-bæk
 comebacks 
 comedian kə-mi-di-ən
@@ -28189,7 +28188,7 @@ djinns
 djinny 
 djins 
 dnieper 
-do doʊ dəʊ dʒ dʉ du du
+do du du
 doable 
 dobber 
 dobbin 
@@ -33122,7 +33121,7 @@ evasive ɪ-veɪ-sɪv
 evasively 
 evasiveness 
 eve iv
-even ivn i-vən i-vən
+even i-vən i-vən
 evened 
 evener 
 eveners 
@@ -36018,7 +36017,7 @@ firmness
 firms 
 firry 
 firs 
-first fɜst fəɹst
+first fəɹst
 firstborn 
 firsthand 
 firstling 
@@ -37350,7 +37349,7 @@ foppery
 fopping 
 foppish fɒp-ɪʃ
 fops 
-for fə fəɹ fɪɹ fəɹ foɹ fɔɹ fɔɹ
+for foɹ
 fora 
 forage fɑɹ-ɪdʒ fɔɹ-ɪdʒ fɒɹ-ɪdʒ
 foraged 
@@ -39368,8 +39367,7 @@ gangway
 gangways 
 ganja ɡɑn-dʒə ɡæn-dʒə ɡɑn-dʒɑ
 gannet ɡan-ɪt
-gannets 
-ganser ɡɑ̃-se ɡɑ̃-sɑ̃ ɡɑ̃-se ɡɑ̃s ɡɑ̃s ɡɑ̃s ɡɑ̃-sɔ̃ ɡɑ̃-se ɡɑ̃s ɡɑ̃-sɛ ɡɑ̃-sɛ ɡɑ̃-sɛ ɡɑ̃-sjɔ̃ ɡɑ̃-sje ɡɑ̃-sɛ ɡɑ̃-se ɡɑ̃-sa ɡɑ̃-sa ɡɑ̃-sam ɡɑ̃-sat ɡɑ̃-sɛʁ ɡɑ̃-sʁe ɡɑ̃-sʁa ɡɑ̃-sʁa ɡɑ̃-sʁɔ̃ ɡɑ̃-sʁe ɡɑ̃-sʁɔ̃ ɡɑ̃-sʁɛ ɡɑ̃-sʁɛ ɡɑ̃-sʁɛ ɡɑ̃-sə-ʁjɔ̃ ɡɑ̃-sə-ʁje ɡɑ̃-sʁɛ ɡɑ̃s ɡɑ̃s ɡɑ̃s ɡɑ̃-sjɔ̃ ɡɑ̃-sje ɡɑ̃s ɡɑ̃-sas ɡɑ̃-sas ɡɑ̃-sa ɡɑ̃-sa-sjɔ̃ ɡɑ̃-sa-sje ɡɑ̃-sas ɡɑ̃s ɡɑ̃-sɔ̃ ɡɑ̃-se
+gannets
 gantlet 
 gantleted 
 gantleting 
@@ -40127,7 +40125,7 @@ gesturers
 gestures 
 gesturing 
 gesundheit ɡə-zʊn-taɪt
-get ɡɛ ɡɪt ɡɛt
+get ɡɛt
 getable 
 getaway 
 getaways 
@@ -40877,7 +40875,7 @@ gnotobiotically
 gnotobiotics 
 gnu nju nu nju
 gnus 
-go ɡɐʉ ɡəʉ ɡoʊ ɡɔ ɡəʊ
+go ɡoʊ
 goad ɡəʊd
 goaded 
 goading 
@@ -43685,8 +43683,7 @@ haziness
 hazing heɪz-ɪŋ
 hazings 
 hazy heɪ-zi
-hdqrs 
-he heɪ hi i hi hi
+he hi hi hi
 head hɛd
 headache hɛ-deɪk
 headaches 
@@ -44825,7 +44822,7 @@ hiroshima
 hirsute həɹ-sut hə-sut hə-sjut
 hirsuteness 
 hirsutism 
-his əz ɪz hɪz hɪz
+his hɪz hɪz
 hisn 
 hispanic his-pa-nik
 hispanics 
@@ -46542,7 +46539,7 @@ hysterical hɪ stɛɹ-ɪ-kəl
 hysterically 
 hysterics 
 hystericus 
-i'm aɪm əm ʌm am
+I aɪ
 iamb aɪəm
 iambi 
 iambic 
@@ -50757,7 +50754,7 @@ irruptions
 irruptive 
 irrupts 
 irs aɪ-ɑɹ-ɛs
-is aɪz ɪz ɪz
+is ɪz ɪz
 isaac 
 isaiah 
 iscariot 
@@ -60186,7 +60183,7 @@ mist mɪst
 mistakable 
 mistake mɪs-teɪk
 mistaken mɪs-teɪk-ə-n
-mistakenly mɪs-teɪk-ənl-i
+mistakenly mɪs-teɪk-ən-li
 mistaker 
 mistakers 
 mistakes 
@@ -62018,7 +62015,7 @@ muzzles
 muzzling 
 muzzy 
 mw maw mu
-my mi mi mɪ mə maɪ maɪ
+my maɪ
 myasthenia 
 myasthenic 
 mycelial 
@@ -65102,7 +65099,7 @@ oersted
 oesophagus i-sɒf-ə-ɡəs ɪ-sɒf-ə-ɡəs ɪ-sɑ-fəɡ-əs
 oeuvre u-vɹə ɜ-vɹə
 oeuvres 
-of əv v əv ɑv ʌv ə əv ʌv ɔv ɒv
+of ɔv
 ofay əʊ-feɪ
 ofays 
 off ɑf ɔf ɒf
@@ -65729,7 +65726,7 @@ opulent
 opulently 
 opus 
 opuses 
-or ɑɹ oʊɹ ɔɹ ɔɹ
+or oʊɹ
 oracle ɒɹ-ək-əl
 oracles 
 oracular ɔɹ-æk-jə-ləɹ ɔ-ɹæk-ju-ləɹ ɔ-ɹæk-ju-lə ɒɹ-æk-ju-lə
@@ -65856,7 +65853,7 @@ ordos
 ordure ɔd-jʊə
 ordures 
 ordurous 
-ore oə oɹ ɔ ɔɹ
+ore oɹ
 oread 
 oregano ə-ɹɛɡ-ən-oʊ ɒɹ-ɨ-ɡɑn-oʊ
 oreganos 
@@ -66141,8 +66138,8 @@ ostracods
 ostrich ɒs-tɹɪtʃ ɒs-tɹɪdʒ ɔs-tɹɪtʃ ɑs-tɹɪtʃ ɔstɹɪdʒ ɑs-tɹɪdʒ
 ostriches 
 oswego 
-other aðə ɐðə ɐðəɹ ʌðəɹ ɐðəɹ ʌðəɹ
-others ʌðəz ʌðəɹz
+other ʌ-ðəɹ
+others ʌ-ðəz ʌ-ðəɹz
 otherwise ʌð-əɹ-waɪz
 otherworldliness 
 otherworldly ʌðəɹ-wəɹld-li
@@ -66186,7 +66183,7 @@ oui
 ouija 
 ounce aʊns
 ounces 
-our ɑ æɔə ɑ ɑɹ ɑɹ aʊəɹ ɑɹ aʊəɹ
+our aʊ-əɹ
 ourangs 
 ours ɑz aʊəz ɑɹz aʊəɹz
 ourself 
@@ -69242,7 +69239,7 @@ pelvis pɛl-vɪs
 pelvises 
 pemmican pɛm-ɪ-kən
 pemmicans 
-pen pɪn pɛn
+pen pɛn
 penal pi-nəl
 penalities 
 penalization 
@@ -69426,7 +69423,7 @@ peonism
 peonisms 
 peons 
 peony pi-ə-ni
-people pipl pi-pəl pi-pəl
+people pi-pəl pi-pəl
 peopled 
 peopler 
 peoplers 
@@ -74423,7 +74420,7 @@ professedly
 professes 
 professing 
 profession pɹə-fɛʃ-ən
-professional pɹə-fɛʃ-ənl
+professional pɹə-fɛʃ-ən-əl
 professionalism 
 professionalist 
 professionalists 
@@ -97071,7 +97068,7 @@ thalliums
 thallophyte θæl-ə-faɪt
 thallophytic 
 thames 
-than ðn ðən ðɛn ðæn
+than ðæn
 thanatoid 
 thanatologies 
 thanatology θan-ə-tɒl-ə-dʒi
@@ -97093,7 +97090,7 @@ thanks θæŋks ðæŋks
 thanksgiving 
 thanksgivings 
 thankyou 
-that ðət dɛt dæt ðɛt ðæt
+that ðæt
 thataway 
 thatch θætʃ
 thatched 
@@ -97373,7 +97370,7 @@ thirties
 thirtieth θɜ-t-iəθ θəɹ-t-iəθ
 thirtieths 
 thirty θɜti θəɹti θəɹ-ɾi
-this ðes ðɪs
+this ðɪs
 thistle θɪsl
 thistledown 
 thistles 
@@ -97879,7 +97876,7 @@ timbre tɪm-bəɹ tæm-bəɹ tæm-bəɹ
 timbrel 
 timbrels 
 timbres 
-time tɜm tɑem taɪm
+time taɪm
 timecard 
 timecards 
 timed 
@@ -98174,7 +98171,7 @@ tm
 tmh 
 tnpk 
 tnt 
-to ɾʊ ɾə tʊ tə tʉ tʉ tu tu tu tu
+to tu tu tu tu
 toad təʊd toʊd toʊd təʊd
 toadfish 
 toadflax 
@@ -103894,7 +103891,7 @@ unzip
 unzipped 
 unzipping 
 unzips 
-up ap ap ʌp ɐp ʌp
+up ʌp
 upbearer 
 upbeat ʌp-bit ʌp-bit
 upbeats 
@@ -104200,7 +104197,7 @@ uruguayan
 uruguayans 
 urushiol ʊɹ-u-ʃi-ɔl
 urushiols 
-us əz əs əs ʌs
+us ʌs
 usa 
 usability ju-zə-bɪl-ɪt-i
 usable 
@@ -107258,7 +107255,7 @@ wharfmaster
 wharfs hwɔɹfs wɔfs wɔɹfs
 wharve wɔɹv wɔv wɔɹv
 wharves wɔɹvz
-what wɔt wɒt wɒt wʌt wʌt wʌ wʌɾ
+what wɒt
 whatever wɒt-ɛvə wʌt-ɛv-əɹ
 whatnot wʌt-nɒt wʌt-nɒt
 whatnots 
@@ -107586,7 +107583,7 @@ whizzer
 whizzers 
 whizzes 
 whizzing 
-who hw h a ɔ o u ɔ o hu hʉ
+who hu
 whoa wəʊ wəʊ woʊ woʊ
 whodunit hu-dʌn-ɪt
 whodunits 
@@ -108501,7 +108498,7 @@ words wɜdz
 wordstar 
 wordy wəɹ-di
 wore wɔɹ wɔ woɹ woə
-work wɜk wɔk wɜɹk wəɹk
+work wəɹk
 workability 
 workable 
 workableness 
@@ -109046,7 +109043,7 @@ yds
 ye ji ji
 yea jeɪ
 yeah jɛə jɛə jæə
-year jɪə jɪɹ jɜ
+year jɪɹ
 year's 
 yearbook 
 yearbooks 
@@ -109223,7 +109220,7 @@ york
 yorker jɔɹ-kəɹ
 yorkers 
 yosemite 
-you ʒ ʃ dʒ tʃ j z s d t jə ju ju ju
+you ju ju ju
 you'd jud
 young jʌŋ
 younger jʌŋ-ɡəɹ jʌŋ-ɡə
@@ -109238,7 +109235,7 @@ youngsters
 youngstown 
 younker 
 younkers 
-your jɔ jʊə jə joʊɹ jɔɹ jʊəɹ jəɹ jəɹ jəɹ jɔɹ jəɹ
+your joʊɹ
 yourn 
 yours jɔɹz jɔɹz jəɹz jəɹz
 yourself jɔ-self jəɹ-sɛlf jʊɹ-sɛlf

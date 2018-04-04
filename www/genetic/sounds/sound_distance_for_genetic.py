@@ -169,74 +169,117 @@ class SoundDistance(object):
             i += 1
         return("".join(temp).split("-"))
 
+    # def _aux_cluster_similarity(self, sounds1, sounds2):
+    #     res = 0
+    #     hypers = []
+    #     weights = 0
+    #     d = 0.15
+    #     if len(sounds1) == len(sounds2):
+    #         for i in range(len(sounds1)):
+    #             w = 1
+    #             s = self.sound_similarity(sounds1[i], sounds2[i])
+    #             res += s[0]
+    #             hypers += s[1]
+    #             weights += w
+    #         if weights > 0:
+    #             res /= weights
+    #         return res, flatten(hypers)
+    #     elif len(sounds1) >= len(sounds2):
+    #         similarities = []
+    #         score = -10000
+    #         for i in range(len(sounds1) - 1):
+    #             current = self._aux_cluster_similarity(sounds1[:i]+sounds1[i+1:], sounds2)
+    #             if current[0] > score:
+    #                 score = current[0]
+    #                 hypers = current[1]
+    #         try:
+    #             return (current + d)*0.92*(1-0/(len(sounds1)+1)) - d, flatten(hypers)
+    #         except:
+    #             return 0, []
+    #     elif len(sounds1) < len(sounds2):
+    #         return self._aux_cluster_similarity(sounds2, sounds1)
+
     def _aux_cluster_similarity(self, sounds1, sounds2):
         res = 0
-        hypers = []
         weights = 0
         d = 0.15
         if len(sounds1) == len(sounds2):
             for i in range(len(sounds1)):
                 w = 1
                 s = self.sound_similarity(sounds1[i], sounds2[i])
-                res += s[0]
-                hypers += s[1]
+                res += s
                 weights += w
             if weights > 0:
                 res /= weights
-            return res, flatten(hypers)
+            return res
         elif len(sounds1) >= len(sounds2):
-            similarities = []
-            score = -10000
-            for i in range(len(sounds1) - 1):
-                current = self._aux_cluster_similarity(sounds1[:i]+sounds1[i+1:], sounds2)
-                if current[0] > score:
-                    score = current[0]
-                    hypers = current[1]
-            try:
-                return (current + d)*0.92*(1-0/(len(sounds1)+1)) - d, flatten(hypers)
-            except:
-                return 0, []
+            n = len(sounds1)
+            alpha = 0.9
+            def _decay(i,n):
+                """
+                Sounds at the start of a cluster matter more
+                _decay(n-1,n) = 1
+                :param i:
+                :param n:
+                :return:
+                """
+                if n > 1 and i < n:
+                    a = (1-alpha)/((n)**4)
+                    return alpha + a*((i+1)**4)
+                else:
+                    return 1
+            similarities = [self._aux_cluster_similarity(sounds1[:i]+sounds1[i+1:], sounds2)*_decay(i,n) for i in range(n)]
+            #print([_decay(i,n) for i in range(n)])
+            #print(similarities)
+            if similarities:
+                return (max(similarities) + d)*0.8*(1-0/(n+10)) - d
+            else:
+                return 0
         elif len(sounds1) < len(sounds2):
             return self._aux_cluster_similarity(sounds2, sounds1)
 
-    def M(self, results, weights, p=1):
-        W = sum(weights)
-        w = [x/W for x in weights]
-        try:
-            return pow(sum(w[i]*pow(results[i],p) for i in range(len(results))),1/p)
-        except ZeroDivisionError:
-            return 0
+    # def M(self, results, weights, p=1):
+    #     W = sum(weights)
+    #     w = [x/W for x in weights]
+    #     try:
+    #         return pow(sum(w[i]*pow(results[i],p) for i in range(len(results))),1/p)
+    #     except ZeroDivisionError:
+    #         return 0
 
     def syllable_similarity(self, s1, s2):
+        print(s1, s2)
         sounds1, sounds2 = self.detect_sounds(s1), self.detect_sounds(s2)
         clusters1, clusters2 = self.cluster_consonant_vowel(sounds1), self.cluster_consonant_vowel(sounds2)
+        print(clusters1, clusters2)
+        res = 0
         adjustment = 1
         if len(clusters1) == len(clusters2) - 1:
-            clusters1 = ['h'] + clusters1
-            adjustment *= 0.85
+            if 'h' in ''.join(clusters2):
+                clusters1 = ['h'] + clusters1
+                adjustment *= 0.85
         elif len(clusters2) == len(clusters1) - 1:
-            clusters2 = ['h'] + clusters2
-            adjustment *= 0.85
+            if 'h' in ''.join(clusters1):
+                clusters2 = ['h'] + clusters2
+                adjustment *= 0.85
         if len(clusters1) != len(clusters2) or len(clusters1) == 0:
-            return 0, []
+            return 0
         else:
             results = []
             weights = []
-            hypers = []
             for i in range(len(clusters1)):
                 w = 1
                 try:
                     if clusters1[i][0] in self.all_consonants:
-                        w = 1.2
+                        w = 2
                 except:
+                    print('passed')
                     pass
                 weights.append(w)
-                similarity = self._aux_cluster_similarity(clusters1[i], clusters2[i])
-                results.append(w*(similarity[0]-1)+1)
-                hypers += (similarity[1])
-            #res = adjustment*sum(results)/sum(weights)
-            res = adjustment*min(results)*max(results)
-            return res, flatten(hypers)
+                results.append(w*(self._aux_cluster_similarity(clusters1[i], clusters2[i])))
+            print(results)
+            res = adjustment*sum(results)/sum(weights)
+            #res = adjustment*min(results)#*max(results)
+            return res
 
 
 def flatten(seq):
