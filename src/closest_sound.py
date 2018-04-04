@@ -79,14 +79,7 @@ def full_sounds(language):
     for sound in sounds:
         db_result = requests.get(f"{API_URL}/phonems/{language}/{sound}").json()['result']
         if isinstance(db_result, str):
-            # insert = {
-            #     "language": language,
-            #     "phonem": sound,
-            #     "written": '#'
-            # }
-            # print(insert)
-            # requests.post(f"{API_URL}/phonems/{language}/", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
-            insert_in_db(language,sound,'#')
+           insert_in_db(language,sound,'#')
 
 def all_closest(language1,language2):
     """
