@@ -89,7 +89,7 @@ def transliterate_one_word(word,language1,language2):
                     item = json.loads(get_phonem(language1, phonem))['result']
                     equivalent = item[language2]
                     writing = json.loads(get_phonem(language2, equivalent))['result']['written']
-                    syll1 += phonem
+                    syll1 += equivalent
                     syll2 += writing
                 except (KeyError, TypeError):
                     continue
@@ -328,7 +328,13 @@ def get_phonem(language, phonem):
         return "A new attribute {} has been added to the phonem {}".format(data, phonem)
 
 
-@app.route('/phonems/<language>/', methods=['POST'])
+@app.route('/delete_phonem/<language>/<phonem>/')
+def delete_phonem(language,phonem):
+    all_phonems = mongo.db.phonems
+    all_phonems.delete_one({'language':language,'phonem':phonem})
+
+
+@app.route('/add_phonem/<language>/', methods=['POST'])
 def add_phonem(language):
     """
     to add new phonems

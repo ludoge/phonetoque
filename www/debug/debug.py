@@ -146,6 +146,12 @@ def phonem(language,phonem):
     return redirect(f'/phonems/{language}')
 
 
+@app.route('/phonem_delete/<language>/<phonem>/')
+def delete_phonem(language,phonem):
+    requests.get(f"{API_URL}/delete_phonem/{language}/{phonem}")
+    return redirect(f'/phonems/{language}')
+
+
 if __name__ == '__main__':
     #print(get_word('french','test'))
     app.run(debug=True, host='0.0.0.0')

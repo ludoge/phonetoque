@@ -6,7 +6,7 @@ import src.sound_distance as sd
 
 API_URL = 'http://127.0.0.1:5001'
 
-possible_languages = ['french', 'english']
+possible_languages = ['french', 'english', 'italian']
 
 
 # ______________ Operations on phonems ______________ #
@@ -48,7 +48,7 @@ def insert_in_db(language, phonem, writing, french=None, english=None, italian=N
     payload = {
         "language": language,
         "phonem": phonem,
-        "writing": writing,
+        "written": writing,
     }
     if french:
         payload['french'] = french
@@ -56,7 +56,7 @@ def insert_in_db(language, phonem, writing, french=None, english=None, italian=N
         payload['english'] = english
     if italian:
         payload['italian'] = italian
-    response = requests.post(f"{API_URL}/phonems/{language}", headers={'Content-Type': 'application/json'},
+    response = requests.post(f"{API_URL}/add_phonem/{language}/", headers={'Content-Type': 'application/json'},
                              data=json.dumps(payload))
     logging.info(response.text)
 
@@ -79,12 +79,7 @@ def full_sounds(language):
     for sound in sounds:
         db_result = requests.get(f"{API_URL}/phonems/{language}/{sound}").json()['result']
         if isinstance(db_result, str):
-            insert = {
-                'language': language,
-                'phonem': sound,
-                'written': '#'
-            }
-            requests.post(f"{API_URL}/phonems/{language}/", headers={'Content-Type': 'application/json'}, data=json.dumps(insert))
+           insert_in_db(language,sound,'#')
 
 
 def all_closest(language1,language2):
