@@ -27,7 +27,6 @@ def translitterate():
     else:
         # on récupère les données de la requête
         content = request.get_json()
-        print(content)
         spelling = content['spelling']
         language1 = content['language1']
         language2 = content['language2']
@@ -42,7 +41,6 @@ def translitterate():
         syllables = []
         syllables_ipa2 = []
         translitteration_score = []
-        print('I saw you', syllables_ipa1)
         for syll in syllables_ipa1:
             try:
                 # on cherche la correspondance de chaque syllabe dans la 2eme langue
@@ -325,6 +323,6 @@ def add_phonem(language):
 
 
 if __name__ == '__main__':
-    #app.run(debug=True, host='127.0.0.1', port=5001)
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='127.0.0.1', port=5001)
+    #app.run(debug=True, host='0.0.0.0')
 
